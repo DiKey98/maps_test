@@ -1,0 +1,43 @@
+body {
+    background: lightgray;
+}
+
+#map {
+    height: 80vh;
+}
+
+#mapContainer {
+    margin-top: 10px;
+    position: relative;
+}
+
+#data {
+    margin-top: 20px;
+}
+
+#saveButton {
+    margin-top: 10px;
+    margin-bottom: 100px;
+}
+
+#infoTableContainer {
+    position: absolute;
+    top: 15vh;
+    margin-left: 10px;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1050;
+}
+
+#infoTableContainer > span {
+    font-weight: bold;
+}
+
+#infoTable {
+    margin-top: 20px;
+}
+
+a {
+    color: black;
+}
