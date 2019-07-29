@@ -3,7 +3,7 @@ body {
 }
 
 #map {
-    height: 80vh;
+    height: 100vh;
 }
 
 #mapContainer {
@@ -11,13 +11,9 @@ body {
     position: relative;
 }
 
-#data {
+#selectObjType {
     margin-top: 20px;
-}
-
-#saveButton {
-    margin-top: 10px;
-    margin-bottom: 100px;
+    margin-bottom: 5%;
 }
 
 #infoTableContainer {
@@ -30,8 +26,9 @@ body {
     z-index: 1050;
 }
 
-#infoTableContainer > span {
+#objectInfoLabel {
     font-weight: bold;
+    text-align: center;
 }
 
 #infoTable {
@@ -40,4 +37,34 @@ body {
 
 a {
     color: black;
+}
+
+#saveEdits {
+    margin-top: 20px;
+    margin-bottom: 5%;
+}
+
+#rejectEditsButton {
+    margin-top: 10px;
+}
+
+.objectData {
+    margin-top: 20px;
+}
+
+.row {
+    margin-top: 5px;
+}
+
+.saveButton {
+    margin-top: 10px;
+    margin-bottom: 100px;
+}
+
+#circle {
+    position: relative;
+}
+
+#roadOneWayLabel {
+    float: left;
 }

@@ -1,19 +1,15 @@
-class ObjectInfo {
-    data1;
-    data2;
-    data3;
-    data4;
+class MapObject {
+    id;
     coords;
-    coordsXY;
 
-    constructor(data1, data2, data3, data4, coords = [], coordsXY = []) {
-        this.data1 = data1;
-        this.data2 = data2;
-        this.data3 = data3;
-        this.data4 = data4;
+    constructor(coords) {
+        this.id = lil.uuid();
         this.coords = coords;
-        this.coordsXY = coordsXY;
     }
+
+    copy(){};
+    renderToTable(tableId){};
+    setDataFromForm(){};
 
     contains(latlng) {
         let polyPoints = this.coords[0];
