@@ -49,6 +49,11 @@ $(document).ready(function () {
 });
 
 function getObjectsFromCookie() {
+    if ($.cookie('infoArray') === null
+        || $.cookie('infoArray') === undefined ) {
+        return [];
+    }
+
     let tmp = JSON.parse($.cookie('infoArray'));
     let result = [];
     for (let i = 0; i < tmp.length; i++) {
