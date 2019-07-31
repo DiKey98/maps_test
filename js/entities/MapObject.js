@@ -2,14 +2,23 @@ class MapObject {
     id;
     coords;
 
-    constructor(coords) {
-        this.id = lil.uuid();
+    constructor(coords, id = null) {
+        this.id = id === null ? lil.uuid() : id;
         this.coords = coords;
     }
 
     copy(){};
     renderToTable(tableId){};
     setDataFromForm(){};
+
+    toJSON(){
+        let tmp = {};
+        for(let key in this) {
+            tmp[key] = this[key];
+        }
+        tmp.type = this.constructor.name;
+        return tmp;
+    };
 
     contains(latlng) {
         let polyPoints = this.coords[0];

@@ -5,8 +5,8 @@ class House extends MapObject {
     square;
     historicalData;
 
-    constructor(address, coords, displayCoords, apartmentsCount, square, historicalData) {
-        super(coords);
+    constructor(address, coords, displayCoords, apartmentsCount, square, historicalData, id = null) {
+        super(coords, id);
         this.address = address;
         this.displayCoords = displayCoords;
         this.apartmentsCount = apartmentsCount;
@@ -67,5 +67,14 @@ class House extends MapObject {
         this.apartmentsCount = $('#apartmentsCount').val();
         this.square = $('#houseSquare').val();
         this.historicalData = $('#houseHistoricalData').val();
+    }
+
+    toJSON() {
+        return super.toJSON();
+    }
+
+    static fromJSON(jsonObj) {
+        return new House(jsonObj.address, jsonObj.coords, jsonObj.displayCoords,
+            jsonObj.apartmentsCount, jsonObj.square, jsonObj.historicalData, jsonObj.id);
     }
 }

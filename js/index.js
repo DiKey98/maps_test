@@ -3,16 +3,15 @@ $(document).ready(function () {
     let mapCenter = [54.5293, 36.2754];
     let map = L.map('map', {editable: true}).setView(mapCenter, 13);
     let initRectangleSize = 0.005;
+
     let editableLayers = L.featureGroup().addTo(map);
     let currentPolygone = null;
-
     let selectObjType = $('#selectObjType');
     let houseData = $('#houseData');
     let commercialBuildingData = $('#commercialBuildingData');
     let roadData = $('#roadData');
     let landPlotData = $('#landPlotData');
     let infoTableContainer = $('#infoTableContainer');
-    let infoArray = [];
 
     selectObjType.hide();
     $('.objectData').hide();
@@ -118,6 +117,7 @@ $(document).ready(function () {
         map.removeLayer(currentPolygone);
         currentPolygone = null;
         $('#map').css("height", "100vh");
+        saveObjectsToCookie(infoArray);
     });
 
     $('.selectButton').click(function (e) {
@@ -150,3 +150,11 @@ $(document).ready(function () {
         selectObjType.hide();
     });
 });
+
+function saveObjectsToCookie(infoArray) {
+    let tmp = [];
+    for (let i = 0; i < infoArray.length; i++) {
+        tmp.push(infoArray[i].toJSON());
+    }
+    $.cookie('infoArray', JSON.stringify(tmp), { expires: 7, path: '/' });
+}

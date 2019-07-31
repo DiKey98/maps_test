@@ -5,8 +5,8 @@ class CommercialBuilding extends MapObject{
     square;
     historicalData;
 
-    constructor(name, address, coords, displayCoords, square, historicalData) {
-        super(coords);
+    constructor(name, address, coords, displayCoords, square, historicalData, id = null) {
+        super(coords, id);
         this.name = name;
         this.address = address;
         this.displayCoords = displayCoords;
@@ -66,5 +66,14 @@ class CommercialBuilding extends MapObject{
         this.displayCoords = [lat, lng];
         this.square = $('#commercialBuildingSquare').val();
         this.historicalData = $('#commercialBuildingHistoricalData').val();
+    }
+
+    toJSON() {
+        return super.toJSON();
+    }
+
+    static fromJSON(jsonObj) {
+        return new CommercialBuilding(jsonObj.name, jsonObj.address, jsonObj.coords,
+            jsonObj.displayCoords, jsonObj.square, jsonObj.historicalData, jsonObj.id);
     }
 }

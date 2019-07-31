@@ -1,51 +1,6 @@
-body {
-    background: lightgray;
-}
-
-#map {
-    height: 100vh;
-}
-
-#mapContainer {
-    margin-top: 10px;
-    position: relative;
-}
-
 #selectObjType {
     margin-top: 20px;
     margin-bottom: 5%;
-}
-
-#infoTableContainer {
-    position: absolute;
-    top: 15vh;
-    margin-left: 10px;
-    background: #f8f9fa;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 1050;
-}
-
-#objectInfoLabel {
-    font-weight: bold;
-    text-align: center;
-}
-
-#infoTable {
-    margin-top: 20px;
-}
-
-a {
-    color: black;
-}
-
-#saveEdits {
-    margin-top: 20px;
-    margin-bottom: 5%;
-}
-
-#rejectEditsButton {
-    margin-top: 10px;
 }
 
 .objectData {
@@ -59,12 +14,4 @@ a {
 .saveButton {
     margin-top: 10px;
     margin-bottom: 100px;
-}
-
-#circle {
-    position: relative;
-}
-
-#roadOneWayLabel {
-    float: left;
 }

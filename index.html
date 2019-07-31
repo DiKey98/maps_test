@@ -24,6 +24,9 @@
     <link
             rel="stylesheet"
             href="css/index.css">
+    <link
+            rel="stylesheet"
+            href="css/main.css">
 
 
     <script
@@ -45,13 +48,17 @@
     <script
             src="//cdn.rawgit.com/lil-js/uuid/0.1.0/uuid.js"></script>
     <script
-            src="js/index.js"></script>
-    <script
             src="libs/Leaflet.Editable.js"></script>
     <script
             src="libs/Path.Drag.js"></script>
     <script
             src="libs/Leaflet.Draw.Event.js"></script>
+    <script
+            src="libs/jquery.cookie.js"></script>
+    <script
+            src="js/constants.js"></script>
+    <script
+            src="js/index.js"></script>
     <script
             src="js/entities/MapObject.js"></script>
     <script
@@ -69,19 +76,21 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Панель администратора</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
             <li class="nav-item active">
-                <a class="nav-link" href="">Главная</a>
+                <a class="nav-link" href="#">Главная</a>
             </li>
             <li class="nav-item">
-                <a id="editButton" class="nav-link" href="">Редактировать</a>
+                <a id="editButton" class="nav-link" href="html/edit.html">Редактировать</a>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
                     Объекты
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

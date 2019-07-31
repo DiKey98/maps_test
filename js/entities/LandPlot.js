@@ -4,8 +4,8 @@ class LandPlot extends MapObject {
     square;
     historicalData;
 
-    constructor(name, coords, kind, square, historicalData) {
-        super(coords);
+    constructor(name, coords, kind, square, historicalData, id = null) {
+        super(coords, id);
         this.name = name;
         this.kind = kind;
         this.square = square;
@@ -52,5 +52,14 @@ class LandPlot extends MapObject {
         this.name = $('#landPlotName').val();
         this.square = $('#landPlotSquare').val();
         this.historicalData = $('#landPlotHistoricalData').val();
+    }
+
+    toJSON() {
+        return super.toJSON();
+    }
+
+    static fromJSON(jsonObj) {
+        return new LandPlot(jsonObj.name, jsonObj.coords, jsonObj.kind,
+            jsonObj.square, jsonObj.historicalData, jsonObj.id);
     }
 }

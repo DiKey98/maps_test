@@ -6,8 +6,8 @@ class Road extends MapObject {
     parkingInfo;
     historicalData;
 
-    constructor(name, coords, long, lanesCount, oneWay, parkingInfo, historicalData) {
-        super(coords);
+    constructor(name, coords, long, lanesCount, oneWay, parkingInfo, historicalData, id = null) {
+        super(coords, id);
         this.name = name;
         this.long = long;
         this.lanesCount = lanesCount;
@@ -70,5 +70,14 @@ class Road extends MapObject {
         this.oneWay = $('#roadOneWay').val();
         this.parkingInfo = $('#roadParkingInfo').val();
         this.historicalData = $('#roadHistoricalData').val();
+    }
+
+    toJSON() {
+        return super.toJSON();
+    }
+
+    static fromJSON(jsonObj) {
+        return new Road(jsonObj.name, jsonObj.coords, jsonObj.long, jsonObj.lanesCount,
+            jsonObj.oneWay, jsonObj.parkingInfo, jsonObj.historicalData, jsonObj.id);
     }
 }
