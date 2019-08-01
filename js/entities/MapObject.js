@@ -1,10 +1,12 @@
 class MapObject {
     id;
     coords;
+    type;
 
     constructor(coords, id = null) {
         this.id = id === null ? lil.uuid() : id;
         this.coords = coords;
+        this.type = this.constructor.name;
     }
 
     copy(){};
@@ -16,7 +18,7 @@ class MapObject {
         for(let key in this) {
             tmp[key] = this[key];
         }
-        tmp.type = this.constructor.name;
+        tmp.type = this.type;
         return tmp;
     };
 

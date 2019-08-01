@@ -1,17 +1,16 @@
 $(document).ready(function () {
-    let accessToken = 'pk.eyJ1IjoiZGlrZXkiLCJhIjoiY2pueDBxYmc4MDFjMTN2bzU5ZGVwM3JtZyJ9.Ngqk6QMrH0NlzNu52YcBuQ';
-    let mapCenter = [54.5293, 36.2754];
-    let map = L.map('map', {editable: true}).setView(mapCenter, 13);
-    let initRectangleSize = 0.005;
+    map = L.map('map', {editable: true}).setView(mapCenter, 13);
+    infoArray = getObjectsFromCookie();
+    editableLayers = L.featureGroup().addTo(map);
+    infoTableContainer = $('#infoTableContainer');
 
-    let editableLayers = L.featureGroup().addTo(map);
+    houseData = $('#houseData');
+    commercialBuildingData = $('#commercialBuildingData');
+    roadData = $('#roadData');
+    landPlotData = $('#landPlotData');
+
     let currentPolygone = null;
     let selectObjType = $('#selectObjType');
-    let houseData = $('#houseData');
-    let commercialBuildingData = $('#commercialBuildingData');
-    let roadData = $('#roadData');
-    let landPlotData = $('#landPlotData');
-    let infoTableContainer = $('#infoTableContainer');
 
     selectObjType.hide();
     $('.objectData').hide();
@@ -23,8 +22,9 @@ $(document).ready(function () {
         accessToken: accessToken
     }).addTo(map);
 
+    showObjects(false, false, false);
+
     map.on('click', function (e) {
-        $('#mapContainer').css("marginRight", "auto");
         infoTableContainer.hide();
         $('#infoTable').empty();
 
@@ -62,7 +62,7 @@ $(document).ready(function () {
         if (currentPolygone !== null) {
             map.removeLayer(currentPolygone);
             currentPolygone = null;
-            $('#map').css("height", "100vh");
+            $('#map').css("height", "82vh");
             selectObjType.hide();
         }
     });
@@ -114,7 +114,8 @@ $(document).ready(function () {
                 break
         }
 
-        map.removeLayer(currentPolygone);
+        currentPolygone.disableEdit();
+        currentPolygone.dragging.disable();
         currentPolygone = null;
         $('#map').css("height", "100vh");
         saveObjectsToCookie(infoArray);
