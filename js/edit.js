@@ -1,25 +1,14 @@
 $(document).ready(function () {
-    map = L.map('map', {editable: true}).setView(mapCenter, 13);
-    infoArray = getObjectsFromCookie();
+    initMap('mapbox.streets', 18);
+    initObjectForms();
+    initMapObjects();
+    initEdits();
 
-    L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${accessToken}`, {
-        maxZoom: 18,
-        id: 'mapbox.streets',
-        accessToken: accessToken
-    }).addTo(map);
-
-    infoTableContainer = $('#infoTableContainer');
-    editableLayers = L.featureGroup().addTo(map);
-
-    houseData = $('#houseData');
-    commercialBuildingData = $('#commercialBuildingData');
-    roadData = $('#roadData');
-    landPlotData = $('#landPlotData');
-
-    saveEdits = $('#saveEdits');
-    rejectEditsButton = $('#rejectEditsButton');
-    saveEditsButton = $('#saveEditsButton');
-    removeObjectButton = $('#removeObjectButton');
+    $.removeCookie("email");
+    setEmailFromCookie();
+    $('#loginLogout').click(function (e) {
+        $.removeCookie("email");
+    });
 
     saveEdits.hide();
     infoTableContainer.hide();
@@ -29,8 +18,7 @@ $(document).ready(function () {
         e.preventDefault();
         saveEdits.hide();
         $('.objectData').hide();
-        applyObjectsChanges();
-        saveObjectsInfo();
+        applyObjectChanges();
         saveObjectsToCookie(infoArray);
         editableLayers.clearLayers();
         showObjects();
@@ -43,18 +31,17 @@ $(document).ready(function () {
         $('.objectData').hide();
         editableLayers.clearLayers();
         showObjects();
-        saveObjectsInfo();
     });
 
     removeObjectButton.click(function (e) {
         e.preventDefault();
         saveEdits.hide();
         $('.objectData').hide();
-        editableLayers.clearLayers();
         infoArray.splice(currentPosition, 1);
+        tmp.splice(currentPosition, 1);
         saveObjectsToCookie(infoArray);
+        editableLayers.clearLayers();
         showObjects();
-        saveObjectsInfo();
     });
 
     showObjects();
@@ -73,4 +60,11 @@ function saveObjectsToCookie(infoArray) {
         }
     }
     $.cookie('infoArray', JSON.stringify(result), { expires: 7, path: '/' });
+}
+
+function initEdits() {
+    saveEdits = $('#saveEdits');
+    rejectEditsButton = $('#rejectEditsButton');
+    saveEditsButton = $('#saveEditsButton');
+    removeObjectButton = $('#removeObjectButton');
 }

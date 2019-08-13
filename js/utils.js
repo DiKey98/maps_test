@@ -15,12 +15,12 @@ function showObjects(bindEditHandler = true, enableEdit = true, enableDragging =
         }
 
         if(bindEditHandler) {
-            polygon.on('editable:editing click', editHandler.bind(null, infoArray[i].id, infoArray[i].type));
+            polygon.on('editable:editing click', coordsEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
         }
     }
 }
 
-function editHandler (id, type, e) {
+function coordsEditHandler (id, type, e) {
     $('.objectData').hide();
     saveEdits.show();
 
@@ -86,12 +86,8 @@ function saveObjectsInfo() {
     }
 }
 
-function applyObjectsChanges() {
-    infoArray = [];
-    for (let i = 0; i < tmp.length; i++) {
-        infoArray.push(tmp[i].copy());
-    }
-
+function applyObjectChanges() {
+    infoArray[currentPosition].coords = tmp[currentPosition].coords;
     switch (infoArray[currentPosition].type) {
         case House.name:
             infoArray[currentPosition] = new House(
@@ -173,4 +169,58 @@ function getObjectsFromCookie() {
         }
     }
     return result;
+}
+
+function getUrlParameter(sParam) {
+    let sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName;
+
+    for (let i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+
+    return null;
+}
+
+function initMap(id, maxZoom) {
+    map = L.map('map', {editable: true}).setView(mapCenter, 13);
+    L.tileLayer(`https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=${accessToken}`, {
+        maxZoom: maxZoom,
+        id: id,
+        accessToken: accessToken
+    }).addTo(map);
+}
+
+function initObjectForms() {
+    houseData = $('#houseData');
+    commercialBuildingData = $('#commercialBuildingData');
+    roadData = $('#roadData');
+    landPlotData = $('#landPlotData');
+}
+
+function initMapObjects() {
+    infoArray = getObjectsFromCookie();
+    editableLayers = L.featureGroup().addTo(map);
+    infoTableContainer = $('#infoTableContainer');
+}
+
+function saveEmailToCookie() {
+    let email = getUrlParameter("email");
+    if (email !== null && email !== undefined) {
+        $.cookie("email", email, {path: "/", expires: 31});
+    }
+}
+
+function setEmailFromCookie() {
+    if ($.cookie("email") !== undefined) {
+        $('#userLogin').html(`<i class="fa fa-user" aria-hidden="true"></i> ${$.cookie("email")}`);
+        $('#loginLogout').html(`Выход <i class="fa fa-sign-out" aria-hidden="true">`).attr('href', '/logout/').click(function (e) {
+            $.removeCookie('email', {path: "/", expires: 31});
+        });
+    }
 }
