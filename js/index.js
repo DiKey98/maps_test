@@ -9,14 +9,6 @@ $(document).ready(function () {
     waterSupplyNet = showLines(infoWaterSupplyNetArray, waterSupplyNet, false, false, false, true, false);
     gasNet = showLines(infoGasNetArray, gasNet, false, false, false, true, false);
 
-    console.log(electricityNet);
-    console.log(waterSupplyNet);
-    console.log(gasNet);
-    //
-    // console.log(infoElectricityNetArray);
-    // console.log(infoWaterSupplyNetArray);
-    // console.log(infoGasNetArray);
-
     let overlayMap = {
         "Эл. сеть": L.layerGroup(electricityNet),
         "Газовая сеть": L.layerGroup(gasNet),

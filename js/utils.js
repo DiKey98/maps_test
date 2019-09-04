@@ -48,18 +48,18 @@ function showLines(infoArray = infoElectricityNetArray, netsArray = electricityN
         if (bindEditHandler) {
             polygon.on('editable:editing click', lineCoordsEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
         } else if (bindClickHandler) {
-            polygon.on('click', lineClickHandler.bind(null, i));
+            polygon.on('click', lineClickHandler.bind(null, i, infoArray));
         }
     }
 
     return netsArray;
 }
 
-function lineClickHandler(idx, e) {
+function lineClickHandler(idx, infoArray, e) {
     L.DomEvent.stopPropagation(e);
     infoTableContainer.hide();
     $('#infoTable').empty();
-    infoElectricityNetArray[idx].renderToTable('infoTable');
+    infoArray[idx].renderToTable('infoTable');
     infoTableContainer.show();
 }
 
