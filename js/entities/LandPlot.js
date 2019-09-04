@@ -62,4 +62,39 @@ class LandPlot extends MapObject {
         return new LandPlot(jsonObj.name, jsonObj.coords, jsonObj.kind,
             jsonObj.square, jsonObj.historicalData, jsonObj.id);
     }
+
+    static renderInputForm() {
+        $('body').append(`
+        <div id="landPlotData" class="container-fluid objectData">
+    <form id="landPlotInfoForm">
+        <div class="form-row row">
+            <div class="col">
+                <select id="landPlotKind" class="form-control">
+                    <option>Парк</option>
+                    <option>Сквер</option>
+                    <option>Пустой участок</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row row">
+            <div class="col">
+                <input id="landPlotName" type="text" class="form-control" placeholder="Название">
+            </div>
+            <div class="col">
+                <input id="landPlotSquare" type="text" class="form-control" placeholder="Площадь (кв. км)">
+            </div>
+        </div>
+        <div class="form-row row">
+            <textarea id="landPlotHistoricalData" type="text" class="form-control"
+                      placeholder="Исторические сведения" rows="5"></textarea>
+        </div>
+        <button id="landPlotSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>
+    </form>
+</div>
+        `)
+    }
+
+    static removeInputForm() {
+        $("#landPlotData").remove();
+    }
 }

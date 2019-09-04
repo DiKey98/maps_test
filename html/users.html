@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Maps</title>
@@ -20,23 +19,15 @@
             crossorigin="anonymous">
     <link
             rel="stylesheet"
-            href="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw.css"/>
+            href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css"/>
     <link
             rel="stylesheet"
-            href="css/index.css">
+            href="../css/main.css">
     <link
             rel="stylesheet"
-            href="css/main.css">
+            href="../css/users.css">
 
 
-    <script
-            src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
-            integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
-            crossorigin=""></script>
-    <script
-            src="https://unpkg.com/leaflet-draw@1.0.2/dist/leaflet.draw-src.js"></script>
-    <script
-            src="https://unpkg.com/leaflet-path-transform@1.1.2/dist/L.Path.Transform.js"></script>
     <script
             src="https://code.jquery.com/jquery-3.4.1.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -46,36 +37,21 @@
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
     <script
+            src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script
+            src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>
+    <script
             src="//cdn.rawgit.com/lil-js/uuid/0.1.0/uuid.js"></script>
     <script
-            src="libs/Leaflet.Editable.js"></script>
+            src="../libs/jquery.cookie.js"></script>
     <script
-            src="libs/Path.Drag.js"></script>
+            src="../js/constants.js"></script>
     <script
-            src="libs/Leaflet.Draw.Event.js"></script>
+            src="../js/utils.js"></script>
     <script
-            src="libs/jquery.cookie.js"></script>
-    <script
-            src="js/constants.js"></script>
-    <script
-            src="js/index.js"></script>
-    <script
-            src="js/utils.js"></script>
-    <script
-            src="js/entities/MapObject.js"></script>
-    <script
-            src="js/entities/House.js"></script>
-    <script
-            src="js/entities/CommercialBuilding.js"></script>
-    <script
-            src="js/entities/Road.js"></script>
-    <script
-            src="js/entities/LandPlot.js"></script>
-    <script
-            src="js/entities/Line.js"></script>
+            src="../js/users.js"></script>
 
 </head>
-
 <body>
 
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
@@ -86,11 +62,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Главная</a>
+            <li class="nav-item">
+                <a class="nav-link" href="admin.html">Главная</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="html/admin.html">Администратор</a>
+                <a id="editButton" class="nav-link" href="edit.html">Редактировать</a>
+            </li>
+            <li class="nav-item active">
+                <a id="usersButton" class="nav-link" href="#">Пользователи</a>
             </li>
         </ul>
     </div>
@@ -99,7 +78,8 @@
             <a id="userLogin" class="nav-link" href="#"></a>
         </li>
         <li class="nav-item navbar-right dropdown">
-            <a id="loginLogout" class="nav-link" href="html/login.html">Вход <i class="fa fa-sign-in" aria-hidden="true"></i></a>
+            <a id="loginLogout" class="nav-link" href="../html/login.html">Вход <i class="fa fa-sign-in"
+                                                                                   aria-hidden="true"></i></a>
         </li>
     </ul>
 </nav>
@@ -108,16 +88,32 @@
     <span>&copy; 2019 Maps</span>
 </nav>
 
-<div id="mapContainer" class="container-fluid">
-    <div id="map"></div>
-
-    <div id="infoTableContainer" class="float-left">
-        <div id="objectInfoLabel" class="container">Информация об объекте</div>
-        <table id="infoTable" class="table table-borderless">
-        </table>
-    </div>
+<div id="usersTableContainer" class="container">
+    <table id="example" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>E-mail</th>
+            <th>Администратор</th>
+            <th>Администратор</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th>ID</th>
+            <th>Имя</th>
+            <th>Фамилия</th>
+            <th>E-mail</th>
+            <th>Администратор</th>
+            <th>Администратор</th>
+        </tr>
+        </tfoot>
+    </table>
 </div>
 
 </body>
-
 </html>

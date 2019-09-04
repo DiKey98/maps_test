@@ -1,4 +1,4 @@
-function showObjects(bindEditHandler = true, enableEdit = true, enableDragging = true) {
+function showObjects(infoArray = infoObjectsArray, bindEditHandler = true, enableEdit = true, enableDragging = true) {
     for (let i = 0; i < infoArray.length; i++) {
         let coords = [];
         for (let j = 0; j < infoArray[i].coords[0].length; j++) {
@@ -6,32 +6,120 @@ function showObjects(bindEditHandler = true, enableEdit = true, enableDragging =
         }
         let polygon = L.polygon(coords).addTo(editableLayers);
 
-        if(enableDragging) {
+        if (enableDragging) {
             polygon.dragging.enable();
         }
 
-        if(enableEdit) {
+        if (enableEdit) {
             polygon.enableEdit();
         }
 
-        if(bindEditHandler) {
-            polygon.on('editable:editing click', coordsEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
+        if (bindEditHandler) {
+            polygon.on('editable:editing click', objectCoordsEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
         }
     }
 }
 
-function coordsEditHandler (id, type, e) {
+function showLines(infoArray = infoLinesArray, bindEditHandler = true, enableEdit = true, enableDragging = true, bindClickHandler = false) {
+    polylines = [];
+    for (let i = 0; i < infoArray.length; i++) {
+        let coords = [];
+        for (let j = 0; j < infoArray[i].coords.length; j++) {
+            coords.push([infoArray[i].coords[j].lat, infoArray[i].coords[j].lng]);
+        }
+        let polygon = L.polyline(coords, {color: infoArray[i].color, weight: infoArray[i].width}).addTo(editableLayers);
+
+        if (enableDragging) {
+            polygon.dragging.enable();
+        }
+
+        if (enableEdit) {
+            polygon.enableEdit();
+        }
+
+        if (bindEditHandler) {
+            polygon.on('editable:editing click', lineCoordsEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
+        } else if (bindClickHandler) {
+            polygon.on('click', lineClickHandler.bind(null, i));
+        }
+
+        polylines.push(polygon);
+    }
+}
+
+function lineClickHandler(idx, e) {
+    L.DomEvent.stopPropagation(e);
+    infoTableContainer.hide();
+    $('#infoTable').empty();
+    infoLinesArray[idx].renderToTable('infoTable');
+    infoTableContainer.show();
+}
+
+function objectClickHandler(idx, e) {
+    L.DomEvent.stopPropagation(e);
+    infoTableContainer.hide();
+    $('#infoTable').empty();
+    infoObjectsArray[idx].renderToTable('infoTable');
+    infoTableContainer.show();
+}
+
+function lineCoordsEditHandler(id, type, e) {
     $('.objectData').hide();
     saveEdits.show();
 
     let oldObject;
-    for (let i = 0; i < infoArray.length; i++) {
-        if (infoArray[i].id !== id) {
+    for (let i = 0; i < infoLinesArray.length; i++) {
+        if (infoLinesArray[i].id !== id) {
             continue;
         }
-        currentPosition = i;
-        tmp[i].coords = e.target._latlngs;
-        oldObject = infoArray[i];
+        currentLinePosition = i;
+        currentObjectPosition = null;
+        tmpLines[i].coords = e.target._latlngs;
+        oldObject = infoLinesArray[i];
+        break;
+    }
+    lineOptions.show();
+
+    $('#lineWeight').on("input", function (e) {
+        updateLineWeight(e, polylines[currentLinePosition]);
+    });
+
+    $('#lineColor').change(function (e) {
+        updateColor(e, polylines[currentLinePosition]);
+    });
+
+
+    switch (oldObject.color) {
+        case "blue":
+            $('#lineColor').val("Синий");
+            break;
+
+        case "red":
+            $('#lineColor').val("Красный");
+            break;
+
+        case "green":
+            $('#lineColor').val("Зеленый");
+            break;
+    }
+
+    $('#lineWeight').val(oldObject.width);
+    $('#lineData').val(oldObject.info);
+}
+
+function objectCoordsEditHandler(id, type, e) {
+    $('.objectData').hide();
+    saveEdits.show();
+
+    let oldObject;
+    for (let i = 0; i < infoObjectsArray.length; i++) {
+        if (infoObjectsArray[i].id !== id) {
+            continue;
+        }
+        currentObjectPosition = i;
+        currentLinePosition = null;
+        tmpObjects[i].coords = e.target._latlngs;
+        oldObject = infoObjectsArray[i];
         break;
     }
 
@@ -80,57 +168,64 @@ function coordsEditHandler (id, type, e) {
 }
 
 function saveObjectsInfo() {
-    tmp = [];
-    for (let i = 0; i < infoArray.length; i++) {
-        tmp.push(infoArray[i].copy());
+    tmpObjects = [];
+    for (let i = 0; i < infoObjectsArray.length; i++) {
+        tmpObjects.push(infoObjectsArray[i].copy());
+    }
+}
+
+function saveLinesInfo() {
+    tmpLines = [];
+    for (let i = 0; i < infoLinesArray.length; i++) {
+        tmpLines.push(infoLinesArray[i].copy());
     }
 }
 
 function applyObjectChanges() {
-    infoArray[currentPosition].coords = tmp[currentPosition].coords;
-    switch (infoArray[currentPosition].type) {
+    infoObjectsArray[currentObjectPosition].coords = tmpObjects[currentObjectPosition].coords;
+    switch (infoObjectsArray[currentObjectPosition].type) {
         case House.name:
-            infoArray[currentPosition] = new House(
+            infoObjectsArray[currentObjectPosition] = new House(
                 $('#houseAddress').val(),
-                infoArray[currentPosition].coords,
+                infoObjectsArray[currentObjectPosition].coords,
                 [$('#houseLatitude').val(), $('#houseLongitude').val()],
                 $('#apartmentsCount').val(),
                 $('#houseSquare').val(),
                 $('#houseHistoricalData').val(),
-                infoArray[currentPosition].id);
+                infoObjectsArray[currentObjectPosition].id);
             break;
 
         case CommercialBuilding.name:
-            infoArray[currentPosition] = new CommercialBuilding(
+            infoObjectsArray[currentObjectPosition] = new CommercialBuilding(
                 $('#commercialBuildingName').val(),
                 $('#commercialBuildingAddress').val(),
-                infoArray[currentPosition].coords,
+                infoObjectsArray[currentObjectPosition].coords,
                 [$('#commercialBuildingLatitude').val(), $('#commercialBuildingLongitude').val()],
                 $('#commercialBuildingSquare').val(),
                 $('#commercialBuildingHistoricalData').val(),
-                infoArray[currentPosition].id);
+                infoObjectsArray[currentObjectPosition].id);
             break;
 
         case LandPlot.name:
-            infoArray[currentPosition] = new LandPlot(
+            infoObjectsArray[currentObjectPosition] = new LandPlot(
                 $('#landPlotName').val(),
-                infoArray[currentPosition].coords,
+                infoObjectsArray[currentObjectPosition].coords,
                 $('#landPlotKind').val(),
                 $('#landPlotSquare').val(),
                 $('#landPlotHistoricalData').val(),
-                infoArray[currentPosition].id);
+                infoObjectsArray[currentObjectPosition].id);
             break;
 
         case Road.name:
-            infoArray[currentPosition] = new Road(
+            infoObjectsArray[currentObjectPosition] = new Road(
                 $('#roadName').val(),
-                infoArray[currentPosition].coords,
+                infoObjectsArray[currentObjectPosition].coords,
                 $('#roadLong').val(),
                 $('#roadLanesCount').val(),
                 $('#roadOneWay').val(),
                 $('#roadParkingInfo').val(),
                 $('#roadHistoricalData').val(),
-                infoArray[currentPosition].id);
+                infoObjectsArray[currentObjectPosition].id);
             break;
 
         default:
@@ -138,13 +233,41 @@ function applyObjectChanges() {
     }
 }
 
+function applyLineChanges() {
+    let color = null;
+    switch ($('#lineColor').val()) {
+        case "Синий":
+            color = "blue";
+            break;
+
+        case "Красный":
+            color = "red";
+            break;
+
+        case "Зеленый":
+            color = "green";
+            break;
+    }
+
+    let width = parseInt($('#lineWeight').val());
+    if (width !== width) {
+        width = tmpLines[currentLinePosition].width;
+    }
+
+    infoLinesArray[currentLinePosition] = new Line(tmpLines[currentLinePosition].coords,
+        $('#lineData').val(),
+        tmpLines[currentLinePosition].id,
+        color,
+        width)
+}
+
 function getObjectsFromCookie() {
-    if ($.cookie('infoArray') === null
-        || $.cookie('infoArray') === undefined ) {
+    if ($.cookie('infoObjectsArray') === null
+        || $.cookie('infoObjectsArray') === undefined) {
         return [];
     }
 
-    let tmp = JSON.parse($.cookie('infoArray'));
+    let tmp = JSON.parse($.cookie('infoObjectsArray'));
     let result = [];
     for (let i = 0; i < tmp.length; i++) {
         switch (tmp[i].type) {
@@ -167,6 +290,20 @@ function getObjectsFromCookie() {
             default:
                 break;
         }
+    }
+    return result;
+}
+
+function getLinesFromCookie() {
+    if ($.cookie('infoLinesArray') === null
+        || $.cookie('infoLinesArray') === undefined) {
+        return [];
+    }
+
+    let tmp = JSON.parse($.cookie('infoLinesArray'));
+    let result = [];
+    for (let i = 0; i < tmp.length; i++) {
+        result.push(new Line(tmp[i].coords, tmp[i].info, tmp[i].id, tmp[i].color, tmp[i].width));
     }
     return result;
 }
@@ -196,15 +333,9 @@ function initMap(id, maxZoom) {
     }).addTo(map);
 }
 
-function initObjectForms() {
-    houseData = $('#houseData');
-    commercialBuildingData = $('#commercialBuildingData');
-    roadData = $('#roadData');
-    landPlotData = $('#landPlotData');
-}
-
 function initMapObjects() {
-    infoArray = getObjectsFromCookie();
+    infoObjectsArray = getObjectsFromCookie();
+    infoLinesArray = getLinesFromCookie();
     editableLayers = L.featureGroup().addTo(map);
     infoTableContainer = $('#infoTableContainer');
 }
@@ -222,5 +353,50 @@ function setEmailFromCookie() {
         $('#loginLogout').html(`Выход <i class="fa fa-sign-out" aria-hidden="true">`).attr('href', '/logout/').click(function (e) {
             $.removeCookie('email', {path: "/", expires: 31});
         });
+    }
+}
+
+function updateLineWeight(e, currentPolygone) {
+    if (e.target.value === "") {
+        currentPolygone.setStyle({
+            weight: 1
+        });
+        return;
+    }
+
+    let weight = parseInt(e.target.value);
+    if (weight !== weight) {
+        return;
+    }
+    currentPolygone.setStyle({
+        weight: weight
+    });
+}
+
+function updateColor(e, currentPolygone) {
+    if (currentPolygone === null) {
+        return;
+    }
+
+    switch (e.target.value) {
+        case "Красный":
+            currentPolygone.setStyle({
+                color: 'red'
+            });
+            break;
+
+        case "Синий":
+            currentPolygone.setStyle({
+                color: 'blue'
+            });
+            break;
+
+        case "Зеленый":
+            currentPolygone.setStyle({
+                color: 'green'
+            });
+            break;
+
+        default: break;
     }
 }

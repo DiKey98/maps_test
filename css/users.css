@@ -1,0 +1,14 @@
+#usersTableContainer {
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+}
+
+tfoot input {
+    width: 100%;
+    padding: 3px;
+    box-sizing: border-box;
+}
+
+tbody > tr:hover {
+    background-color: whitesmoke !important;
+}

@@ -1,23 +1,29 @@
 // общие константы
-window.infoArray = [];
+let infoObjectsArray = [];
+let infoLinesArray = [];
 let accessToken = 'pk.eyJ1IjoiZGlrZXkiLCJhIjoiY2pueDBxYmc4MDFjMTN2bzU5ZGVwM3JtZyJ9.Ngqk6QMrH0NlzNu52YcBuQ';
 let mapCenter = [54.5293, 36.2754];
 let map;
 let initRectangleSize = 0.005;
 let editableLayers;
 let infoTableContainer;
-let houseData;
-let commercialBuildingData;
-let roadData;
-let landPlotData;
 
 // для редактирования
-let tmp = [];
+let tmpObjects = [];
+let tmpLines = [];
 let saveEditsButton;
 let rejectEditsButton;
 let removeObjectButton;
 let saveEdits;
-let currentPosition;
+let currentObjectPosition;
+let currentLinePosition;
+let houseData;
+let commercialBuildingData;
+let landPlotData;
+let roadData;
+let lineOptions;
+let polylines = [];
+let tableIsShowed = false;
 
 // для аутентификации общее
 let responseType = 'code';
@@ -35,6 +41,6 @@ let scope = "https://www.googleapis.com/auth/userinfo.email https://www.googleap
 
 // для аутентификации Mail.Ru
 let mailRuAuthUrl = "https://connect.mail.ru/oauth/authorize";
-let mailRuClientId = "702253";
+let mailRuClientId = "766480";
 let mailRuRedirectUri = "http://localhost:3000/mailru-auth";
 

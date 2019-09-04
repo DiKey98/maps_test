@@ -71,6 +71,8 @@
             src="../js/entities/Road.js"></script>
     <script
             src="../js/entities/LandPlot.js"></script>
+    <script
+            src="../js/entities/Line.js"></script>
 
 </head>
 
@@ -96,9 +98,13 @@
                     Объекты
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a id="rectButton" class="dropdown-item" href="#">Выделить</a>
+                    <a id="rectButton" class="dropdown-item" href="#">Область</a>
+                    <a id="polylineButton" class="dropdown-item" href="#">Линия</a>
                     <a id="delButton" class="dropdown-item" href="#">Отменить выделение</a>
                 </div>
+            </li>
+            <li class="nav-item">
+                <a id="usersButton" class="nav-link" href="users.html">Пользователи</a>
             </li>
         </ul>
     </div>
@@ -136,124 +142,26 @@
     </form>
 </div>
 
-<div id="houseData" class="container-fluid objectData">
-    <form id="houseInfoForm">
+<div id="lineOptions" class="container-fluid objectData">
+    <form id="lineOptionsForm">
         <div class="form-row row">
             <div class="col">
-                <input id="houseAddress" type="text" class="form-control" placeholder="Адрес">
-            </div>
-        </div>
-        <div class="form-row row">
-            <div class="col">
-                <input id="houseLatitude" type="text" class="form-control" placeholder="Широта">
-            </div>
-            <div class="col">
-                <input id="houseLongitude" type="text" class="form-control" placeholder="Долгота">
-            </div>
-        </div>
-        <div class="form-row row">
-            <div class="col">
-                <input id="apartmentsCount" type="text" class="form-control" placeholder="Число квартир">
-            </div>
-            <div class="col">
-                <input id="houseSquare" type="text" class="form-control" placeholder="Площадь (кв. метры)">
-            </div>
-        </div>
-        <div class="form-row row">
-            <textarea id="houseHistoricalData" type="text" class="form-control" placeholder="Исторические сведения" rows="5"></textarea>
-        </div>
-        <button id="houseSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>
-    </form>
-</div>
-
-<div id="commercialBuildingData" class="container-fluid objectData">
-    <form id="commercialBuildingInfoForm">
-        <div class="form-row row">
-            <div class="col">
-                <input id="commercialBuildingAddress" type="text" class="form-control" placeholder="Адрес">
-            </div>
-        </div>
-        <div class="form-row row">
-            <div class="col">
-                <input id="commercialBuildingLatitude" type="text" class="form-control" placeholder="Широта">
-            </div>
-            <div class="col">
-                <input id="commercialBuildingLongitude" type="text" class="form-control" placeholder="Долгота">
-            </div>
-        </div>
-        <div class="form-row row">
-            <div class="col">
-                <input id="commercialBuildingName" type="text" class="form-control" placeholder="Название">
-            </div>
-            <div class="col">
-                <input id="commercialBuildingSquare" type="text" class="form-control" placeholder="Площадь (кв. метры)">
-            </div>
-        </div>
-        <div class="form-row row">
-            <textarea id="commercialBuildingHistoricalData" type="text" class="form-control"
-                      placeholder="Исторические сведения" rows="5"></textarea>
-        </div>
-        <button id="commercialBuildingSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>
-    </form>
-</div>
-
-<div id="roadData" class="container-fluid objectData">
-    <form id="roadInfoForm">
-        <div class="form-row row">
-            <div class="col">
-                <input id="roadName" type="text" class="form-control" placeholder="Название">
-            </div>
-            <div class="col">
-                <input id="roadLong" type="text" class="form-control" placeholder="Длина (км)">
-            </div>
-        </div>
-        <div class="form-row row">
-            <div class="col">
-                <input id="roadLanesCount" type="text" class="form-control" placeholder="Число полос">
-            </div>
-            <div class="col">
-                <select id="roadOneWay" class="form-control">
-                    <option>Одностроннее движение</option>
-                    <option>Двустроннее движение</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-row row">
-            <textarea id="roadParkingInfo" type="text" class="form-control"
-                      placeholder="Парковка" rows="3"></textarea>
-        </div>
-        <div class="form-row row">
-            <textarea id="roadHistoricalData" type="text" class="form-control"
-                      placeholder="Исторические сведения" rows="5"></textarea>
-        </div>
-        <button id="roadSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>
-    </form>
-</div>
-
-<div id="landPlotData" class="container-fluid objectData">
-    <form id="landPlotInfoForm">
-        <div class="form-row row">
-            <div class="col">
-                <select id="landPlotKind" class="form-control">
-                    <option>Парк</option>
-                    <option>Сквер</option>
-                    <option>Пустой участок</option>
+                <select id="lineColor" class="form-control">
+                    <option>Синий</option>
+                    <option>Красный</option>
+                    <option>Зеленый</option>
                 </select>
             </div>
         </div>
         <div class="form-row row">
             <div class="col">
-                <input id="landPlotName" type="text" class="form-control" placeholder="Название">
-            </div>
-            <div class="col">
-                <input id="landPlotSquare" type="text" class="form-control" placeholder="Площадь (кв. км)">
+                <input id="lineWeight" type="text" class="form-control" placeholder="Толщина">
             </div>
         </div>
         <div class="form-row row">
-            <textarea id="landPlotHistoricalData" type="text" class="form-control"
-                      placeholder="Исторические сведения" rows="5"></textarea>
+            <textarea id="lineData" class="form-control" placeholder="Информация" rows="5"></textarea>
         </div>
-        <button id="landPlotSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>
+        <button id="lineOptionsSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>
     </form>
 </div>
 

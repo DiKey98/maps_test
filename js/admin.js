@@ -1,10 +1,10 @@
 $(document).ready(function () {
     initMap('mapbox.streets', 18);
-    initObjectForms();
     initMapObjects();
 
     let currentPolygone = null;
     let selectObjType = $('#selectObjType');
+    let lineOptions = $('#lineOptions');
 
     selectObjType.hide();
     $('.objectData').hide();
@@ -14,14 +14,15 @@ $(document).ready(function () {
     setEmailFromCookie();
 
     showObjects(false, false, false);
+    showLines(infoLinesArray, false, false, false, true);
 
     map.on('click', function (e) {
         infoTableContainer.hide();
         $('#infoTable').empty();
 
-        for (let i = 0; i < infoArray.length; i++) {
-            if (infoArray[i].contains(e.latlng)) {
-                infoArray[i].renderToTable('infoTable');
+        for (let i = 0; i < infoObjectsArray.length; i++) {
+            if (infoObjectsArray[i].contains(e.latlng)) {
+                infoObjectsArray[i].renderToTable('infoTable');
                 infoTableContainer.show();
                 break;
             }
@@ -49,6 +50,56 @@ $(document).ready(function () {
         selectObjType.show();
     });
 
+    $('#polylineButton').click(function (e) {
+        if (currentPolygone !== null) {
+            map.removeLayer(currentPolygone);
+            currentPolygone = null;
+        }
+
+        infoTableContainer.hide();
+        selectObjType.hide();
+        $('#infoTable').empty();
+
+        currentPolygone = L.polyline([
+            [map.getCenter().lat - initRectangleSize, map.getCenter().lng - initRectangleSize],
+            [map.getCenter().lat + initRectangleSize, map.getCenter().lng + initRectangleSize],
+            [map.getCenter().lat + initRectangleSize + 0.003, map.getCenter().lng + initRectangleSize - 0.003]])
+            .addTo(editableLayers);
+
+        currentPolygone.setStyle({
+            color: 'blue'
+        });
+
+        $('#map').css("height", "60vh");
+        currentPolygone.enableEdit();
+        currentPolygone.dragging.enable();
+        lineOptions.show();
+    });
+
+    $('#lineColor').change(function (e) {
+        updateColor(e, currentPolygone);
+    });
+
+    $('#lineWeight').on("input", function (e) {
+        updateLineWeight(e, currentPolygone);
+    });
+
+    $('#lineOptionsSaveButton').click(function (e) {
+        e.preventDefault();
+        currentPolygone.disableEdit();
+        currentPolygone.dragging.disable();
+        let weight = 3;
+        if (currentPolygone.options.weight !== undefined) {
+            weight = currentPolygone.options.weight
+        }
+        infoLinesArray.push(new Line(currentPolygone._latlngs, $('#lineData').val(), null, currentPolygone.options.color, weight));
+        currentPolygone = null;
+        $('#lineOptionsForm')[0].reset();
+        lineOptions.hide();
+        $('#map').css("height", "82vh");
+        saveObjectsToCookie(infoLinesArray, 'infoLinesArray');
+    });
+
     $('#delButton').click(function (e) {
         if (currentPolygone !== null) {
             map.removeLayer(currentPolygone);
@@ -56,60 +107,6 @@ $(document).ready(function () {
             $('#map').css("height", "82vh");
             selectObjType.hide();
         }
-    });
-
-    $('.saveButton').click(function (e) {
-        if (currentPolygone === null) {
-            return;
-        }
-        e.preventDefault();
-
-        switch (e.target.id) {
-            case "houseSaveButton":
-                let house = new House();
-                house.coords = currentPolygone._latlngs;
-                house.setDataFromForm();
-                infoArray.push(house);
-                houseData.hide();
-                $('#houseInfoForm')[0].reset();
-                break;
-
-            case "commercialBuildingSaveButton":
-                let commercialBuilding = new CommercialBuilding();
-                commercialBuilding.coords = currentPolygone._latlngs;
-                commercialBuilding.setDataFromForm();
-                infoArray.push(commercialBuilding);
-                commercialBuildingData.hide();
-                $('#commercialBuildingInfoForm')[0].reset();
-                break;
-
-            case "roadSaveButton":
-                let road = new Road();
-                road.coords = currentPolygone._latlngs;
-                road.setDataFromForm();
-                infoArray.push(road);
-                roadData.hide();
-                $('#roadInfoForm')[0].reset();
-                break;
-
-            case "landPlotSaveButton":
-                let area = new LandPlot();
-                area.coords = currentPolygone._latlngs;
-                area.setDataFromForm();
-                infoArray.push(area);
-                landPlotData.hide();
-                $('#landPlotInfoForm')[0].reset();
-                break;
-
-            default:
-                break
-        }
-
-        currentPolygone.disableEdit();
-        currentPolygone.dragging.disable();
-        currentPolygone = null;
-        $('#map').css("height", "100vh");
-        saveObjectsToCookie(infoArray);
     });
 
     $('.selectButton').click(function (e) {
@@ -120,19 +117,67 @@ $(document).ready(function () {
 
         switch (e.target.id) {
             case "houseButton":
-                houseData.show();
+                House.renderInputForm();
+                $('#houseSaveButton').click(function (e) {
+                    if (currentPolygone === null) {
+                        return;
+                    }
+                    e.preventDefault();
+                    let house = new House();
+                    house.coords = currentPolygone._latlngs;
+                    house.setDataFromForm();
+                    infoObjectsArray.push(house);
+                    House.removeInputForm();
+                    save(currentPolygone);
+                });
                 break;
 
             case "commercialBuildingButton":
-                commercialBuildingData.show();
+                CommercialBuilding.renderInputForm();
+                $('#commercialBuildingSaveButton').click(function (e) {
+                    if (currentPolygone === null) {
+                        return;
+                    }
+                    e.preventDefault();
+                    let commercialBuilding = new CommercialBuilding();
+                    commercialBuilding.coords = currentPolygone._latlngs;
+                    commercialBuilding.setDataFromForm();
+                    infoObjectsArray.push(commercialBuilding);
+                    CommercialBuilding.removeInputForm();
+                    save(currentPolygone);
+                });
                 break;
 
             case "roadButton":
-                roadData.show();
+                Road.renderInputForm();
+                $('#roadSaveButton').click(function (e) {
+                    if (currentPolygone === null) {
+                        return;
+                    }
+                    e.preventDefault();
+                    let road = new Road();
+                    road.coords = currentPolygone._latlngs;
+                    road.setDataFromForm();
+                    infoObjectsArray.push(road);
+                    Road.removeInputForm();
+                    save(currentPolygone);
+                });
                 break;
 
             case "landPlotButton":
-                landPlotData.show();
+                LandPlot.renderInputForm();
+                $('#landPlotSaveButton').click(function (e) {
+                    if (currentPolygone === null) {
+                        return;
+                    }
+                    e.preventDefault();
+                    let area = new LandPlot();
+                    area.coords = currentPolygone._latlngs;
+                    area.setDataFromForm();
+                    infoObjectsArray.push(area);
+                    LandPlot.removeInputForm();
+                    save(currentPolygone);
+                });
                 break;
 
             default:
@@ -143,10 +188,18 @@ $(document).ready(function () {
     });
 });
 
-function saveObjectsToCookie(infoArray) {
+function saveObjectsToCookie(infoArray, name = 'infoObjectsArray') {
     let tmp = [];
     for (let i = 0; i < infoArray.length; i++) {
         tmp.push(infoArray[i].toJSON());
     }
-    $.cookie('infoArray', JSON.stringify(tmp), { expires: 7, path: '/' });
+    $.cookie(name, JSON.stringify(tmp), { expires: 7, path: '/' });
+}
+
+function save(currentPolygone) {
+    currentPolygone.disableEdit();
+    currentPolygone.dragging.disable();
+    currentPolygone = null;
+    $('#map').css("height", "100vh");
+    saveObjectsToCookie(infoObjectsArray);
 }

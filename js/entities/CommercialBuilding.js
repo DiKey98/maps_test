@@ -76,4 +76,42 @@ class CommercialBuilding extends MapObject{
         return new CommercialBuilding(jsonObj.name, jsonObj.address, jsonObj.coords,
             jsonObj.displayCoords, jsonObj.square, jsonObj.historicalData, jsonObj.id);
     }
+
+    static renderInputForm() {
+        $('body').append(
+            `<div id="commercialBuildingData" class="container-fluid objectData">
+    <form id="commercialBuildingInfoForm">
+        <div class="form-row row">
+            <div class="col">
+                <input id="commercialBuildingAddress" type="text" class="form-control" placeholder="Адрес">
+            </div>
+        </div>
+        <div class="form-row row">
+            <div class="col">
+                <input id="commercialBuildingLatitude" type="text" class="form-control" placeholder="Широта">
+            </div>
+            <div class="col">
+                <input id="commercialBuildingLongitude" type="text" class="form-control" placeholder="Долгота">
+            </div>
+        </div>
+        <div class="form-row row">
+            <div class="col">
+                <input id="commercialBuildingName" type="text" class="form-control" placeholder="Название">
+            </div>
+            <div class="col">
+                <input id="commercialBuildingSquare" type="text" class="form-control" placeholder="Площадь (кв. метры)">
+            </div>
+        </div>
+        <div class="form-row row">
+            <textarea id="commercialBuildingHistoricalData" type="text" class="form-control"
+                      placeholder="Исторические сведения" rows="5"></textarea>
+        </div>
+        <button id="commercialBuildingSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>
+    </form>
+</div>`);
+    }
+
+    static removeInputForm() {
+        $("#commercialBuildingData").remove();
+    }
 }

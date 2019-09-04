@@ -77,4 +77,47 @@ class House extends MapObject {
         return new House(jsonObj.address, jsonObj.coords, jsonObj.displayCoords,
             jsonObj.apartmentsCount, jsonObj.square, jsonObj.historicalData, jsonObj.id);
     }
+
+    static renderInputForm(withSaveButton = true) {
+        let form = `<div id="houseData" class="container-fluid objectData">
+    <form id="houseInfoForm">
+        <div class="form-row row">
+            <div class="col">
+                <input id="houseAddress" type="text" class="form-control" placeholder="Адрес">
+            </div>
+        </div>
+        <div class="form-row row">
+            <div class="col">
+                <input id="houseLatitude" type="text" class="form-control" placeholder="Широта">
+            </div>
+            <div class="col">
+                <input id="houseLongitude" type="text" class="form-control" placeholder="Долгота">
+            </div>
+        </div>
+        <div class="form-row row">
+            <div class="col">
+                <input id="apartmentsCount" type="text" class="form-control" placeholder="Число квартир">
+            </div>
+            <div class="col">
+                <input id="houseSquare" type="text" class="form-control" placeholder="Площадь (кв. метры)">
+            </div>
+        </div>
+        <div class="form-row row">
+            <textarea id="houseHistoricalData" type="text" class="form-control" placeholder="Исторические сведения" rows="5"></textarea>
+        </div>
+    `;
+
+        let saveButton = `<button id="houseSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>`;
+        let end = `</form></div>`;
+
+        if (withSaveButton) {
+            form += saveButton;
+        }
+        form += end;
+        $('body').append(form);
+    }
+
+    static removeInputForm() {
+        $("#houseData").remove();
+    }
 }

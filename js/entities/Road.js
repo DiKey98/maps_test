@@ -80,4 +80,45 @@ class Road extends MapObject {
         return new Road(jsonObj.name, jsonObj.coords, jsonObj.long, jsonObj.lanesCount,
             jsonObj.oneWay, jsonObj.parkingInfo, jsonObj.historicalData, jsonObj.id);
     }
+
+    static renderInputForm() {
+        $('body').append(`
+        <div id="roadData" class="container-fluid objectData">
+    <form id="roadInfoForm">
+        <div class="form-row row">
+            <div class="col">
+                <input id="roadName" type="text" class="form-control" placeholder="Название">
+            </div>
+            <div class="col">
+                <input id="roadLong" type="text" class="form-control" placeholder="Длина (км)">
+            </div>
+        </div>
+        <div class="form-row row">
+            <div class="col">
+                <input id="roadLanesCount" type="text" class="form-control" placeholder="Число полос">
+            </div>
+            <div class="col">
+                <select id="roadOneWay" class="form-control">
+                    <option>Одностроннее движение</option>
+                    <option>Двустроннее движение</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row row">
+            <textarea id="roadParkingInfo" type="text" class="form-control"
+                      placeholder="Парковка" rows="3"></textarea>
+        </div>
+        <div class="form-row row">
+            <textarea id="roadHistoricalData" type="text" class="form-control"
+                      placeholder="Исторические сведения" rows="5"></textarea>
+        </div>
+        <button id="roadSaveButton" type="submit" class="btn btn-outline-success btn-sm btn-block saveButton">Сохранить</button>
+    </form>
+</div>
+        `);
+    }
+
+    static removeInputForm() {
+        $("#roadData").remove();
+    }
 }
