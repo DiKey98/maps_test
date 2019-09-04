@@ -13,7 +13,7 @@ $(document).ready(function () {
     saveEmailToCookie();
     setEmailFromCookie();
 
-    showObjects(false, false, false);
+    showObjects(infoObjectsArray, false, false, false, true);
     showLines(infoLinesArray, false, false, false, true);
 
     map.on('click', function (e) {
