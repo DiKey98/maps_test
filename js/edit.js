@@ -26,7 +26,7 @@ $(document).ready(function () {
 
         if (currentLinePosition !== null) {
             applyLineChanges();
-            saveLinesToCookie(infoLinesArray);
+            saveLinesToCookie(infoElectricityNetArray);
         }
 
         editableLayers.clearLayers();
@@ -56,9 +56,9 @@ $(document).ready(function () {
         }
 
         if (currentLinePosition !== null) {
-            infoLinesArray.splice(currentLinePosition, 1);
+            infoElectricityNetArray.splice(currentLinePosition, 1);
             tmpLines.splice(currentLinePosition, 1);
-            saveLinesToCookie(infoLinesArray);
+            saveLinesToCookie(infoElectricityNetArray);
         }
 
         editableLayers.clearLayers();
@@ -97,7 +97,7 @@ function saveLinesToCookie(infoArray) {
             }
         }
     }
-    $.cookie('infoLinesArray', JSON.stringify(result), { expires: 7, path: '/' });
+    $.cookie('infoElectricityNetArray', JSON.stringify(result), { expires: 7, path: '/' });
 }
 
 function initEdits() {

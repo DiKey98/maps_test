@@ -14,7 +14,10 @@ $(document).ready(function () {
     setEmailFromCookie();
 
     showObjects(infoObjectsArray, false, false, false, true);
-    showLines(infoLinesArray, false, false, false, true);
+
+    showLines(infoElectricityNetArray, electricityNet, false, false, false, true);
+    showLines(infoGasNetArray, gasNet, false, false, false, true);
+    showLines(infoWaterSupplyNetArray, waterSupplyNet, false, false, false, true);
 
     map.on('click', function (e) {
         infoTableContainer.hide();
@@ -92,12 +95,33 @@ $(document).ready(function () {
         if (currentPolygone.options.weight !== undefined) {
             weight = currentPolygone.options.weight
         }
-        infoLinesArray.push(new Line(currentPolygone._latlngs, $('#lineData').val(), null, currentPolygone.options.color, weight));
+
+        switch (currentPolygone.options.color) {
+            case "blue":
+                infoElectricityNetArray.push(new Line(currentPolygone._latlngs,
+                    $('#lineData').val(), null, currentPolygone.options.color, weight));
+                saveObjectsToCookie(infoElectricityNetArray, 'infoElectricityNetArray');
+                break;
+
+            case "red":
+                infoGasNetArray.push(new Line(currentPolygone._latlngs,
+                    $('#lineData').val(), null, currentPolygone.options.color, weight));
+                saveObjectsToCookie(infoGasNetArray, 'infoGasNetArray');
+                break;
+
+            case "green":
+                infoWaterSupplyNetArray.push(new Line(currentPolygone._latlngs,
+                    $('#lineData').val(), null, currentPolygone.options.color, weight));
+                saveObjectsToCookie(infoWaterSupplyNetArray, 'infoWaterSupplyNetArray');
+                break;
+        }
+
+        //infoElectricityNetArray.push(new Line(currentPolygone._latlngs, $('#lineData').val(), null, currentPolygone.options.color, weight));
         currentPolygone = null;
         $('#lineOptionsForm')[0].reset();
         lineOptions.hide();
         $('#map').css("height", "82vh");
-        saveObjectsToCookie(infoLinesArray, 'infoLinesArray');
+        //saveObjectsToCookie(infoElectricityNetArray, 'infoElectricityNetArray');
     });
 
     $('#delButton').click(function (e) {
@@ -193,7 +217,7 @@ function saveObjectsToCookie(infoArray, name = 'infoObjectsArray') {
     for (let i = 0; i < infoArray.length; i++) {
         tmp.push(infoArray[i].toJSON());
     }
-    $.cookie(name, JSON.stringify(tmp), { expires: 7, path: '/' });
+    $.cookie(name, JSON.stringify(tmp), {expires: 7, path: '/'});
 }
 
 function save(currentPolygone) {

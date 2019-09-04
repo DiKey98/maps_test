@@ -20,14 +20,22 @@ function showObjects(infoArray = infoObjectsArray, bindEditHandler = true, enabl
     }
 }
 
-function showLines(infoArray = infoLinesArray, bindEditHandler = true, enableEdit = true, enableDragging = true, bindClickHandler = false) {
-    polylines = [];
+function showLines(infoArray = infoElectricityNetArray, netsArray = electricityNet, bindEditHandler = true,
+                   enableEdit = true, enableDragging = true, bindClickHandler = false, addToMap = true) {
+    netsArray = [];
     for (let i = 0; i < infoArray.length; i++) {
         let coords = [];
         for (let j = 0; j < infoArray[i].coords.length; j++) {
             coords.push([infoArray[i].coords[j].lat, infoArray[i].coords[j].lng]);
         }
-        let polygon = L.polyline(coords, {color: infoArray[i].color, weight: infoArray[i].width}).addTo(editableLayers);
+        let polygon = L.polyline(coords, {color: infoArray[i].color, weight: infoArray[i].width});
+        netsArray.push(polygon);
+
+        if (addToMap) {
+            polygon = polygon.addTo(editableLayers);
+            netsArray.pop();
+            netsArray.push(polygon);
+        }
 
         if (enableDragging) {
             polygon.dragging.enable();
@@ -42,24 +50,16 @@ function showLines(infoArray = infoLinesArray, bindEditHandler = true, enableEdi
         } else if (bindClickHandler) {
             polygon.on('click', lineClickHandler.bind(null, i));
         }
-
-        polylines.push(polygon);
     }
+
+    return netsArray;
 }
 
 function lineClickHandler(idx, e) {
     L.DomEvent.stopPropagation(e);
     infoTableContainer.hide();
     $('#infoTable').empty();
-    infoLinesArray[idx].renderToTable('infoTable');
-    infoTableContainer.show();
-}
-
-function objectClickHandler(idx, e) {
-    L.DomEvent.stopPropagation(e);
-    infoTableContainer.hide();
-    $('#infoTable').empty();
-    infoObjectsArray[idx].renderToTable('infoTable');
+    infoElectricityNetArray[idx].renderToTable('infoTable');
     infoTableContainer.show();
 }
 
@@ -68,24 +68,24 @@ function lineCoordsEditHandler(id, type, e) {
     saveEdits.show();
 
     let oldObject;
-    for (let i = 0; i < infoLinesArray.length; i++) {
-        if (infoLinesArray[i].id !== id) {
+    for (let i = 0; i < infoElectricityNetArray.length; i++) {
+        if (infoElectricityNetArray[i].id !== id) {
             continue;
         }
         currentLinePosition = i;
         currentObjectPosition = null;
         tmpLines[i].coords = e.target._latlngs;
-        oldObject = infoLinesArray[i];
+        oldObject = infoElectricityNetArray[i];
         break;
     }
     lineOptions.show();
 
     $('#lineWeight').on("input", function (e) {
-        updateLineWeight(e, polylines[currentLinePosition]);
+        updateLineWeight(e, electricityNet[currentLinePosition]);
     });
 
     $('#lineColor').change(function (e) {
-        updateColor(e, polylines[currentLinePosition]);
+        updateColor(e, electricityNet[currentLinePosition]);
     });
 
 
@@ -176,8 +176,8 @@ function saveObjectsInfo() {
 
 function saveLinesInfo() {
     tmpLines = [];
-    for (let i = 0; i < infoLinesArray.length; i++) {
-        tmpLines.push(infoLinesArray[i].copy());
+    for (let i = 0; i < infoElectricityNetArray.length; i++) {
+        tmpLines.push(infoElectricityNetArray[i].copy());
     }
 }
 
@@ -254,7 +254,7 @@ function applyLineChanges() {
         width = tmpLines[currentLinePosition].width;
     }
 
-    infoLinesArray[currentLinePosition] = new Line(tmpLines[currentLinePosition].coords,
+    infoElectricityNetArray[currentLinePosition] = new Line(tmpLines[currentLinePosition].coords,
         $('#lineData').val(),
         tmpLines[currentLinePosition].id,
         color,
@@ -294,13 +294,13 @@ function getObjectsFromCookie() {
     return result;
 }
 
-function getLinesFromCookie() {
-    if ($.cookie('infoLinesArray') === null
-        || $.cookie('infoLinesArray') === undefined) {
+function getNetsFromCookie(name = 'infoElectricityNetArray') {
+    if ($.cookie(name) === null
+        || $.cookie(name) === undefined) {
         return [];
     }
 
-    let tmp = JSON.parse($.cookie('infoLinesArray'));
+    let tmp = JSON.parse($.cookie(name));
     let result = [];
     for (let i = 0; i < tmp.length; i++) {
         result.push(new Line(tmp[i].coords, tmp[i].info, tmp[i].id, tmp[i].color, tmp[i].width));
@@ -335,7 +335,9 @@ function initMap(id, maxZoom) {
 
 function initMapObjects() {
     infoObjectsArray = getObjectsFromCookie();
-    infoLinesArray = getLinesFromCookie();
+    infoElectricityNetArray = getNetsFromCookie('infoElectricityNetArray');
+    infoGasNetArray = getNetsFromCookie('infoGasNetArray');
+    infoWaterSupplyNetArray = getNetsFromCookie('infoWaterSupplyNetArray');
     editableLayers = L.featureGroup().addTo(map);
     infoTableContainer = $('#infoTableContainer');
 }

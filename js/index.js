@@ -5,7 +5,25 @@ $(document).ready(function () {
     saveEmailToCookie();
     setEmailFromCookie();
 
-    showLines(infoLinesArray, false, false, false, true);
+    electricityNet = showLines(infoElectricityNetArray, electricityNet, false, false, false, true, false);
+    waterSupplyNet = showLines(infoWaterSupplyNetArray, waterSupplyNet, false, false, false, true, false);
+    gasNet = showLines(infoGasNetArray, gasNet, false, false, false, true, false);
+
+    console.log(electricityNet);
+    console.log(waterSupplyNet);
+    console.log(gasNet);
+    //
+    // console.log(infoElectricityNetArray);
+    // console.log(infoWaterSupplyNetArray);
+    // console.log(infoGasNetArray);
+
+    let overlayMap = {
+        "Эл. сеть": L.layerGroup(electricityNet),
+        "Газовая сеть": L.layerGroup(gasNet),
+        "Водопроводная сеть": L.layerGroup(waterSupplyNet)
+    };
+
+    L.control.layers({}, overlayMap).addTo(map);
 
     infoTableContainer.hide();
     map.on('click', function (e) {
@@ -20,3 +38,5 @@ $(document).ready(function () {
         }
     });
 });
+
+// TODO переделать редактирование с учетом 3-х массивов!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

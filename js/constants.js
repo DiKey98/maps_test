@@ -1,6 +1,8 @@
 // общие константы
 let infoObjectsArray = [];
-let infoLinesArray = [];
+let infoElectricityNetArray = [];
+let infoWaterSupplyNetArray = [];
+let infoGasNetArray = [];
 let accessToken = 'pk.eyJ1IjoiZGlrZXkiLCJhIjoiY2pueDBxYmc4MDFjMTN2bzU5ZGVwM3JtZyJ9.Ngqk6QMrH0NlzNu52YcBuQ';
 let mapCenter = [54.5293, 36.2754];
 let map;
@@ -22,8 +24,9 @@ let commercialBuildingData;
 let landPlotData;
 let roadData;
 let lineOptions;
-let polylines = [];
-let tableIsShowed = false;
+let electricityNet = [];
+let waterSupplyNet = [];
+let gasNet = [];
 
 // для аутентификации общее
 let responseType = 'code';
