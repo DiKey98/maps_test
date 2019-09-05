@@ -12,13 +12,17 @@ let infoTableContainer;
 
 // для редактирования
 let tmpObjects = [];
-let tmpLines = [];
+let tmpElectricityNetArray = [];
+let tmpWaterSupplyNetArray = [];
+let tmpGasNetArray = [];
 let saveEditsButton;
 let rejectEditsButton;
 let removeObjectButton;
 let saveEdits;
-let currentObjectPosition;
-let currentLinePosition;
+let currentObjectPosition = null;
+let currentElectricityLinePosition = null;
+let currentWaterSupplyLinePosition = null;
+let currentGasLinePosition = null;
 let houseData;
 let commercialBuildingData;
 let landPlotData;

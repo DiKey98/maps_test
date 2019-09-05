@@ -68,26 +68,54 @@ function lineCoordsEditHandler(id, type, e) {
     saveEdits.show();
 
     let oldObject;
-    for (let i = 0; i < infoElectricityNetArray.length; i++) {
-        if (infoElectricityNetArray[i].id !== id) {
-            continue;
+    currentElectricityLinePosition = findCurrentPositionById(infoElectricityNetArray, id);
+    if (currentElectricityLinePosition === null) {
+        currentWaterSupplyLinePosition = findCurrentPositionById(infoWaterSupplyNetArray, id);
+        if (currentWaterSupplyLinePosition === null) {
+            currentGasLinePosition = findCurrentPositionById(infoGasNetArray, id);
+            oldObject = infoGasNetArray[currentGasLinePosition];
+            tmpGasNetArray[currentGasLinePosition].coords = e.target._latlngs;
+        } else {
+            oldObject = infoWaterSupplyNetArray[currentWaterSupplyLinePosition];
+            tmpWaterSupplyNetArray[currentWaterSupplyLinePosition].coords = e.target._latlngs;
         }
-        currentLinePosition = i;
-        currentObjectPosition = null;
-        tmpLines[i].coords = e.target._latlngs;
-        oldObject = infoElectricityNetArray[i];
-        break;
+    } else {
+        oldObject = infoElectricityNetArray[currentElectricityLinePosition];
+        tmpElectricityNetArray[currentElectricityLinePosition].coords = e.target._latlngs;
     }
     lineOptions.show();
 
     $('#lineWeight').on("input", function (e) {
-        updateLineWeight(e, electricityNet[currentLinePosition]);
+        if (currentElectricityLinePosition !== null) {
+            updateLineWeight(e, electricityNet[currentElectricityLinePosition]);
+            return;
+        }
+
+        if (currentWaterSupplyLinePosition !== null) {
+            updateLineWeight(e, waterSupplyNet[currentWaterSupplyLinePosition]);
+            return;
+        }
+
+        if (currentGasLinePosition !== null) {
+            updateLineWeight(e, gasNet[currentGasLinePosition]);
+        }
     });
 
     $('#lineColor').change(function (e) {
-        updateColor(e, electricityNet[currentLinePosition]);
-    });
+        if (currentElectricityLinePosition !== null) {
+            updateColor(e, electricityNet[currentElectricityLinePosition]);
+            return;
+        }
 
+        if (currentWaterSupplyLinePosition !== null) {
+            updateColor(e, waterSupplyNet[currentWaterSupplyLinePosition]);
+            return;
+        }
+
+        if (currentGasLinePosition !== null) {
+            updateColor(e, gasNet[currentGasLinePosition]);
+        }
+    });
 
     switch (oldObject.color) {
         case "blue":
@@ -117,7 +145,6 @@ function objectCoordsEditHandler(id, type, e) {
             continue;
         }
         currentObjectPosition = i;
-        currentLinePosition = null;
         tmpObjects[i].coords = e.target._latlngs;
         oldObject = infoObjectsArray[i];
         break;
@@ -174,11 +201,12 @@ function saveObjectsInfo() {
     }
 }
 
-function saveLinesInfo() {
-    tmpLines = [];
-    for (let i = 0; i < infoElectricityNetArray.length; i++) {
-        tmpLines.push(infoElectricityNetArray[i].copy());
+function saveNetInfo(infoArray = infoElectricityNetArray) {
+    let tmp = [];
+    for (let i = 0; i < infoArray.length; i++) {
+        tmp.push(infoArray[i].copy());
     }
+    return tmp;
 }
 
 function applyObjectChanges() {
@@ -231,9 +259,11 @@ function applyObjectChanges() {
         default:
             break;
     }
+
+    currentObjectPosition = null;
 }
 
-function applyLineChanges() {
+function applyLineChanges(infoArray, tmpArray, currentPosition) {
     let color = null;
     switch ($('#lineColor').val()) {
         case "Синий":
@@ -251,14 +281,16 @@ function applyLineChanges() {
 
     let width = parseInt($('#lineWeight').val());
     if (width !== width) {
-        width = tmpLines[currentLinePosition].width;
+        width = tmpArray[currentPosition].width;
     }
 
-    infoElectricityNetArray[currentLinePosition] = new Line(tmpLines[currentLinePosition].coords,
+    infoArray[currentPosition] = new Line(tmpArray[currentPosition].coords,
         $('#lineData').val(),
-        tmpLines[currentLinePosition].id,
+        tmpArray[currentPosition].id,
         color,
-        width)
+        width);
+
+    currentPosition = null;
 }
 
 function getObjectsFromCookie() {
@@ -401,4 +433,14 @@ function updateColor(e, currentPolygone) {
 
         default: break;
     }
+}
+
+function findCurrentPositionById(infoArray, id) {
+    for (let i = 0; i < infoArray.length; i++) {
+        if (infoArray[i].id !== id) {
+            continue;
+        }
+        return i;
+    }
+    return null;
 }
