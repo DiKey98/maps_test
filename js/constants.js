@@ -9,6 +9,7 @@ let map;
 let initRectangleSize = 0.005;
 let editableLayers;
 let infoTableContainer;
+let showObjectsInfo = false;
 
 // для редактирования
 let tmpObjects = [];
@@ -28,6 +29,7 @@ let commercialBuildingData;
 let landPlotData;
 let roadData;
 let lineOptions;
+let mapObjects = [];
 let electricityNet = [];
 let waterSupplyNet = [];
 let gasNet = [];

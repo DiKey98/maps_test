@@ -1,15 +1,15 @@
-let showObjectsInfo = false;
-
 $(document).ready(function () {
     initMap('mapbox.streets', 18);
     initMapObjects();
+    initNetArrays();
+    infoObjectsArray = getObjectsFromCookie();
 
     saveEmailToCookie();
     setEmailFromCookie();
 
-    electricityNet = showLines(infoElectricityNetArray, electricityNet, false, false, false, true, false);
-    waterSupplyNet = showLines(infoWaterSupplyNetArray, waterSupplyNet, false, false, false, true, false);
-    gasNet = showLines(infoGasNetArray, gasNet, false, false, false, true, false);
+    electricityNet = showLines(infoElectricityNetArray, false, false, false, true, false);
+    waterSupplyNet = showLines(infoWaterSupplyNetArray, false, false, false, true, false);
+    gasNet = showLines(infoGasNetArray, false, false, false, true, false);
 
     let overlayMap = {
         "Электрическая сеть": L.layerGroup(electricityNet),

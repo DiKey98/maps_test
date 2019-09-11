@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Maps</title>
+    <title>Объекты</title>
 
     <link
             rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
@@ -63,7 +62,7 @@
     <script
             src="../js/constants.js"></script>
     <script
-            src="../js/admin.js"></script>
+            src="../js/objects.js"></script>
     <script
             src="../js/utils.js"></script>
     <script
@@ -76,12 +75,9 @@
             src="../js/entities/Road.js"></script>
     <script
             src="../js/entities/LandPlot.js"></script>
-    <script
-            src="../js/entities/Line.js"></script>
+
 </head>
-
 <body>
-
 <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Панель администратора</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
@@ -90,23 +86,21 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Главная</a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    Слои
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a id="electricityNetButton" class="dropdown-item" href="nets.html">Электрические сети</a>
-                    <a id="gasNetArrayButton" class="dropdown-item" href="nets.html?nets=gas">Газовые сети</a>
-                    <a id="waterSupplyNetButton" class="dropdown-item" href="nets.html?nets=water">Водопроводные сети</a>
-                    <a id="objectsButton" class="dropdown-item" href="objects.html">Объекты и дороги</a>
-                </div>
+            <li class="nav-item">
+                <a class="nav-link" href="admin.html">Главная</a>
             </li>
             <li class="nav-item">
-                <a id="usersButton" class="nav-link" href="users.html">Пользователи</a>
+                <a id="editButton" class="nav-link" href="edit.html?type=objects">Редактировать</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Выделить
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a id="rectButton" class="dropdown-item" href="#">Область</a>
+                    <a id="delButton" class="dropdown-item" href="#">Отменить выделение</a>
+                </div>
             </li>
         </ul>
     </div>
@@ -133,6 +127,16 @@
         </table>
     </div>
 </div>
-</body>
 
+<div id="selectObjType" class="container-fluid">
+    <form>
+        <button id="houseButton" type="submit" class="btn btn-outline-success btn-sm btn-block selectButton">Жилой дом</button>
+        <button id="commercialBuildingButton" type="submit" class="btn btn-outline-success btn-sm btn-block selectButton">
+            Коммерческое здание</button>
+        <button id="landPlotButton" type="submit" class="btn btn-outline-success btn-sm btn-block selectButton">Участок земли</button>
+        <button id="roadButton" type="submit" class="btn btn-outline-success btn-sm btn-block selectButton">Дорога</button>
+    </form>
+</div>
+
+</body>
 </html>

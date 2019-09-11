@@ -4,6 +4,25 @@ $(document).ready(function () {
     initEdits();
     initObjectsData();
 
+    let type = getUrlParameter("type");
+    switch (type) {
+        case "objects":
+            infoObjectsArray = getObjectsFromCookie();
+            break;
+
+        case "water":
+            infoWaterSupplyNetArray = getNetsFromCookie('infoWaterSupplyNetArray');
+            break;
+
+        case "gas":
+            infoGasNetArray = getNetsFromCookie('infoGasNetArray');
+            break;
+
+        default:
+            infoElectricityNetArray = getNetsFromCookie('infoElectricityNetArray');
+            break;
+    }
+
     $.removeCookie("email");
     setEmailFromCookie();
     $('#loginLogout').click(function (e) {
@@ -20,8 +39,7 @@ $(document).ready(function () {
         $('.objectData').hide();
         saveObjectOrNet();
         editableLayers.clearLayers();
-        showObjects();
-        showNets();
+        showNets(type);
         alert("Изменения сохранены!");
     });
 
@@ -30,8 +48,7 @@ $(document).ready(function () {
         saveEdits.hide();
         $('.objectData').hide();
         editableLayers.clearLayers();
-        showObjects();
-        showNets();
+        showNets(type);
     });
 
     removeObjectButton.click(function (e) {
@@ -40,12 +57,50 @@ $(document).ready(function () {
         $('.objectData').hide();
         removeObjectOrNet();
         editableLayers.clearLayers();
-        showObjects();
-        showNets();
+        showNets(type);
     });
 
-    showObjects();
-    showNets();
+    showNets(type);
+
+    map.on('click', function (e) {
+        infoTableContainer.hide();
+        $('#infoTable').empty();
+
+        if (!showObjectsInfo) {
+            return;
+        }
+
+        for (let i = 0; i < infoObjectsArray.length; i++) {
+            if (infoObjectsArray[i].contains(e.latlng)) {
+                infoObjectsArray[i].renderToTable('infoTable');
+                infoTableContainer.show();
+                break;
+            }
+        }
+    });
+
+    map.on('overlayadd', function(e) {
+        switch (e.name) {
+            case "Электрическая сеть":
+                break;
+
+            case "Газовая сеть":
+                break;
+
+            case "Водопроводная сеть":
+                break;
+
+            case "Информация об объектах и дорогах":
+                showObjectsInfo = true;
+                break;
+        }
+    });
+
+    map.on('overlayremove', function(e) {
+        if (e.name === "Информация об объектах и дорогах") {
+            showObjectsInfo = false;
+        }
+    });
 
     saveObjectsInfo();
     saveNetsInfo();
@@ -94,13 +149,27 @@ function initObjectsData() {
     roadData = $('#roadData');
 }
 
-function showNets() {
-    electricityNet = showLines(infoElectricityNetArray, electricityNet, true,
-        true, true, true, true);
-    waterSupplyNet = showLines(infoWaterSupplyNetArray, waterSupplyNet, true,
-        true, true, true, true);
-    gasNet = showLines(infoGasNetArray, gasNet, true, true, true,
-        true, true);
+function showNets(type) {
+    switch (type) {
+        case "objects":
+            mapObjects = showObjects(infoObjectsArray, true, true, true, true);
+            break;
+
+        case "water":
+            waterSupplyNet = showLines(infoWaterSupplyNetArray, true,
+                true, true, true, true);
+            break;
+
+        case "gas":
+            gasNet = showLines(infoGasNetArray, true, true, true,
+                true, true);
+            break;
+
+        default:
+            electricityNet = showLines(infoElectricityNetArray, true,
+                true, true, true, true);
+            break;
+    }
 }
 
 function saveNetsInfo() {
