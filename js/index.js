@@ -1,3 +1,5 @@
+let showObjectsInfo = false;
+
 $(document).ready(function () {
     initMap('mapbox.streets', 18);
     initMapObjects();
@@ -10,9 +12,10 @@ $(document).ready(function () {
     gasNet = showLines(infoGasNetArray, gasNet, false, false, false, true, false);
 
     let overlayMap = {
-        "Эл. сеть": L.layerGroup(electricityNet),
+        "Электрическая сеть": L.layerGroup(electricityNet),
         "Газовая сеть": L.layerGroup(gasNet),
-        "Водопроводная сеть": L.layerGroup(waterSupplyNet)
+        "Водопроводная сеть": L.layerGroup(waterSupplyNet),
+        "Информация об объектах и дорогах": L.layerGroup(),
     };
 
     L.control.layers({}, overlayMap).addTo(map);
@@ -21,12 +24,29 @@ $(document).ready(function () {
     map.on('click', function (e) {
         infoTableContainer.hide();
         $('#infoTable').empty();
+
+        if (!showObjectsInfo) {
+            return;
+        }
+
         for (let i = 0; i < infoObjectsArray.length; i++) {
             if (infoObjectsArray[i].contains(e.latlng)) {
                 infoObjectsArray[i].renderToTable('infoTable');
                 infoTableContainer.show();
                 break;
             }
+        }
+    });
+
+    map.on('overlayadd', function(e) {
+        if (e.name === "Информация об объектах и дорогах") {
+            showObjectsInfo = true;
+        }
+    });
+
+    map.on('overlayremove', function(e) {
+        if (e.name === "Информация об объектах и дорогах") {
+            showObjectsInfo = false;
         }
     });
 });
