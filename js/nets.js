@@ -148,5 +148,5 @@ function saveObjectsToCookie(infoArray, name = 'infoObjectsArray') {
     for (let i = 0; i < infoArray.length; i++) {
         tmp.push(infoArray[i].toJSON());
     }
-    $.cookie(name, JSON.stringify(tmp), {expires: 7, path: '/'});
+    $.cookie(name, JSON.stringify(tmp), {expires: 31, path: '/'});
 }

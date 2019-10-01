@@ -121,7 +121,7 @@ function saveObjectsToCookie(infoArray) {
             }
         }
     }
-    $.cookie('infoObjectsArray', JSON.stringify(result), {expires: 7, path: '/'});
+    $.cookie('infoObjectsArray', JSON.stringify(result), {expires: 31, path: '/'});
 }
 
 function saveNetsToCookie(infoArray, name = 'infoElectricityNetArray') {
@@ -135,7 +135,7 @@ function saveNetsToCookie(infoArray, name = 'infoElectricityNetArray') {
             }
         }
     }
-    $.cookie(name, JSON.stringify(result), {expires: 7, path: '/'});
+    $.cookie(name, JSON.stringify(result), {expires: 31, path: '/'});
 }
 
 function initEdits() {
