@@ -3,6 +3,7 @@ let infoObjectsArray = [];
 let infoElectricityNetArray = [];
 let infoWaterSupplyNetArray = [];
 let infoGasNetArray = [];
+let infoRoadsArray = [];
 let accessToken = 'pk.eyJ1IjoiZGlrZXkiLCJhIjoiY2pueDBxYmc4MDFjMTN2bzU5ZGVwM3JtZyJ9.Ngqk6QMrH0NlzNu52YcBuQ';
 let mapCenter = [54.5293, 36.2754];
 let map;
@@ -13,6 +14,7 @@ let showObjectsInfo = false;
 
 // для редактирования
 let tmpObjects = [];
+let tmpRoads = [];
 let tmpElectricityNetArray = [];
 let tmpWaterSupplyNetArray = [];
 let tmpGasNetArray = [];
@@ -24,6 +26,7 @@ let currentObjectPosition = null;
 let currentElectricityLinePosition = null;
 let currentWaterSupplyLinePosition = null;
 let currentGasLinePosition = null;
+let currentRoadPosition = null;
 let houseData;
 let commercialBuildingData;
 let landPlotData;
@@ -33,6 +36,7 @@ let mapObjects = [];
 let electricityNet = [];
 let waterSupplyNet = [];
 let gasNet = [];
+let roads = [];
 
 // для аутентификации общее
 let responseType = 'code';

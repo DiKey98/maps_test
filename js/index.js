@@ -15,7 +15,8 @@ $(document).ready(function () {
         "Электрическая сеть": L.layerGroup(electricityNet),
         "Газовая сеть": L.layerGroup(gasNet),
         "Водопроводная сеть": L.layerGroup(waterSupplyNet),
-        "Информация об объектах и дорогах": L.layerGroup(),
+        "Дороги": L.layerGroup(),
+        "Информация об объектах": L.layerGroup(),
     };
 
     L.control.layers({}, overlayMap).addTo(map);
@@ -39,13 +40,13 @@ $(document).ready(function () {
     });
 
     map.on('overlayadd', function(e) {
-        if (e.name === "Информация об объектах и дорогах") {
+        if (e.name === "Информация об объектах") {
             showObjectsInfo = true;
         }
     });
 
     map.on('overlayremove', function(e) {
-        if (e.name === "Информация об объектах и дорогах") {
+        if (e.name === "Информация об объектах") {
             showObjectsInfo = false;
         }
     });

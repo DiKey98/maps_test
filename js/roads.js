@@ -9,12 +9,10 @@ $(document).ready(function () {
         }
     });
 
-    initNetArrays();
+    infoRoadsArray = getRoadsFromCookie();
     initMap('mapbox.streets', 18);
     initMapObjects();
-
-    let netType = getUrlParameter("nets");
-    showNets(netType);
+    roads = showLines(infoRoadsArray, false, false, false, true);
 
     $('.objectData').hide();
     infoTableContainer.hide();
@@ -65,47 +63,28 @@ $(document).ready(function () {
         currentPolygone.disableEdit();
         currentPolygone.dragging.disable();
         let weight = 3;
+        let color = 'rgba(0, 0, 255)';
 
         if (currentPolygone.options.weight !== undefined) {
             weight = currentPolygone.options.weight
         }
 
-        switch (netType) {
-            case "gas":
-                infoGasNetArray.push(new Line(currentPolygone._latlngs,
-                    $('#lineData').val(), null, currentPolygone.options.color, weight));
-                saveObjectsToCookie(infoGasNetArray, 'infoGasNetArray');
-                break;
-
-            case "water":
-                infoWaterSupplyNetArray.push(new Line(currentPolygone._latlngs,
-                    $('#lineData').val(), null, currentPolygone.options.color, weight));
-                saveObjectsToCookie(infoWaterSupplyNetArray, 'infoWaterSupplyNetArray');
-                break;
-
-            default:
-                infoElectricityNetArray.push(new Line(currentPolygone._latlngs,
-                    $('#lineData').val(), null, currentPolygone.options.color, weight));
-                saveObjectsToCookie(infoElectricityNetArray, 'infoElectricityNetArray');
-                break;
+        if (currentPolygone.options.color !== undefined) {
+            color = currentPolygone.options.color
         }
+
+        let road = new Road();
+        road.coords = currentPolygone._latlngs;
+        road.setDataFromForm();
+        road.color = color;
+        road.width= weight;
+        infoRoadsArray.push(road);
+        saveNetsToCookie(infoRoadsArray, 'infoRoadsArray');
 
         currentPolygone.addTo(editableLayers).on('click', function (e) {
             L.DomEvent.stopPropagation(e);
             infoTableContainer.show();
-            switch (netType) {
-                case "gas":
-                    infoGasNetArray[infoGasNetArray.length-1].renderToTable('infoTable');
-                    break;
-
-                case "water":
-                    infoWaterSupplyNetArray[infoWaterSupplyNetArray.length-1].renderToTable('infoTable');
-                    break;
-
-                default:
-                    infoElectricityNetArray[infoElectricityNetArray.length-1].renderToTable('infoTable');
-                    break;
-            }
+            infoRoadsArray[infoRoadsArray.length-1].renderToTable('infoTable');
         });
 
         currentPolygone = null;
@@ -120,33 +99,20 @@ $(document).ready(function () {
     });
 
     $('#editButton').click(function (e) {
-        window.location.href = `edit.html?type=${netType}`;
+        window.location.href = `edit.html?type=${"roads"}`;
     });
 });
 
-function showNets(netType) {
-    switch (netType) {
-        case "gas":
-            $('title').text("Газовые сети");
-            gasNet = showLines(infoGasNetArray, false, false, false, true);
-            break;
-
-        case "water":
-            $('title').text("Водопроводные сети");
-            waterSupplyNet = showLines(infoWaterSupplyNetArray, false, false, false, true);
-            break;
-
-        default:
-            $('title').text("Электрические сети");
-            electricityNet = showLines(infoElectricityNetArray, false, false, false, true);
-            break;
-    }
-}
-
-function saveObjectsToCookie(infoArray, name = 'infoObjectsArray') {
-    let tmp = [];
+function saveNetsToCookie(infoArray, name = 'infoElectricityNetArray') {
+    let result = [];
     for (let i = 0; i < infoArray.length; i++) {
-        tmp.push(infoArray[i].toJSON());
+        result.push(infoArray[i].toJSON());
+        for (let k = 0; k < result[i].coords.length; k++) {
+            result[i].coords[k] = {
+                lat: result[i].coords[k].lat,
+                lng: result[i].coords[k].lng
+            }
+        }
     }
-    $.cookie(name, JSON.stringify(tmp), {expires: 7, path: '/'});
+    $.cookie(name, JSON.stringify(result), {expires: 7, path: '/'});
 }

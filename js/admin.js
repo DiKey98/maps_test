@@ -3,6 +3,7 @@ $(document).ready(function () {
     initMapObjects();
     initNetArrays();
     infoObjectsArray = getObjectsFromCookie();
+    infoRoadsArray = getRoadsFromCookie();
 
     $('.objectData').hide();
     infoTableContainer.hide();
@@ -14,12 +15,14 @@ $(document).ready(function () {
     waterSupplyNet = showLines(infoWaterSupplyNetArray, false, false, false, true, false);
     gasNet = showLines(infoGasNetArray, false, false, false, true, false);
     mapObjects = showObjects(infoObjectsArray, false, false, false, false);
+    roads = showLines(infoRoadsArray, false, false, false, true, false);
 
     let overlayMap = {
         "Электрическая сеть": L.layerGroup(electricityNet),
         "Газовая сеть": L.layerGroup(gasNet),
         "Водопроводная сеть": L.layerGroup(waterSupplyNet),
-        "Информация об объектах и дорогах": L.layerGroup(mapObjects),
+        "Дороги": L.layerGroup(roads),
+        "Информация об объектах": L.layerGroup(mapObjects),
     };
     L.control.layers({}, overlayMap).addTo(map);
 
@@ -41,13 +44,14 @@ $(document).ready(function () {
     });
 
     map.on('overlayadd', function(e) {
-        if (e.name === "Информация об объектах и дорогах") {
+        console.log(e.name);
+        if (e.name === "Информация об объектах") {
             showObjectsInfo = true;
         }
     });
 
     map.on('overlayremove', function(e) {
-        if (e.name === "Информация об объектах и дорогах") {
+        if (e.name === "Информация об объектах") {
             showObjectsInfo = false;
         }
     });

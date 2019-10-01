@@ -1,3 +1,5 @@
+let oldObject;
+
 function showObjects(infoArray = infoObjectsArray, bindEditHandler = true,
                      enableEdit = true, enableDragging = true, addToMap = true) {
     let mapObjectsArray = [];
@@ -32,7 +34,7 @@ function showObjects(infoArray = infoObjectsArray, bindEditHandler = true,
 }
 
 function showLines(infoArray = infoElectricityNetArray, bindEditHandler = true,
-                   enableEdit = true, enableDragging = true, bindClickHandler = false, addToMap = true) {
+                   enableEdit = true, enableDragging = true, bindClickHandler = false, addToMap = true, isRoad = false) {
     let netsArray = [];
     for (let i = 0; i < infoArray.length; i++) {
         let coords = [];
@@ -57,7 +59,11 @@ function showLines(infoArray = infoElectricityNetArray, bindEditHandler = true,
         }
 
         if (bindEditHandler) {
-            polygon.on('editable:editing click', lineCoordsEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
+            if (!isRoad) {
+                polygon.on('editable:editing click', lineCoordsEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
+                return netsArray;
+            }
+            polygon.on('editable:editing click', roadEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
         } else if (bindClickHandler) {
             polygon.on('click', lineClickHandler.bind(null, i, infoArray));
         }
@@ -78,14 +84,19 @@ function lineCoordsEditHandler(id, type, e) {
     $('.objectData').hide();
     saveEdits.show();
 
-    let oldObject;
     currentElectricityLinePosition = findCurrentPositionById(infoElectricityNetArray, id);
     if (currentElectricityLinePosition === null) {
         currentWaterSupplyLinePosition = findCurrentPositionById(infoWaterSupplyNetArray, id);
         if (currentWaterSupplyLinePosition === null) {
             currentGasLinePosition = findCurrentPositionById(infoGasNetArray, id);
-            oldObject = infoGasNetArray[currentGasLinePosition];
-            tmpGasNetArray[currentGasLinePosition].coords = e.target._latlngs;
+            if (currentGasLinePosition === null) {
+                currentRoadPosition = findCurrentPositionById(infoRoadsArray, id);
+                oldObject = infoRoadsArray[currentRoadPosition];
+                infoRoadsArray[currentRoadPosition].coords = e.target._latlngs;
+            } else {
+                oldObject = infoGasNetArray[currentGasLinePosition];
+                tmpGasNetArray[currentGasLinePosition].coords = e.target._latlngs;
+            }
         } else {
             oldObject = infoWaterSupplyNetArray[currentWaterSupplyLinePosition];
             tmpWaterSupplyNetArray[currentWaterSupplyLinePosition].coords = e.target._latlngs;
@@ -109,6 +120,11 @@ function lineCoordsEditHandler(id, type, e) {
 
         if (currentGasLinePosition !== null) {
             updateLineWeight(e, gasNet[currentGasLinePosition]);
+            return;
+        }
+
+        if (currentRoadPosition !== null) {
+            updateLineWeight(e, roads[currentRoadPosition]);
         }
     }).val(oldObject.width);
 
@@ -137,10 +153,31 @@ function lineCoordsEditHandler(id, type, e) {
             gasNet[currentGasLinePosition].setStyle({
                 color: e.value
             });
+            return;
+        }
+
+        if (currentRoadPosition !== null) {
+            roads[currentRoadPosition].setStyle({
+                color: e.value
+            });
         }
     }).val(oldObject.color);
 
     $('#lineData').val(oldObject.info);
+}
+
+function roadEditHandler(id, type, e) {
+    lineCoordsEditHandler(id, type, e);
+
+    roadData.show();
+    $('#roadName').val(oldObject.name);
+    $('#roadLong').val(oldObject.long);
+    $('#roadLanesCount').val(oldObject.lanesCount);
+    $('#roadOneWay').val(oldObject.oneWay);
+    $('#roadParkingInfo').val(oldObject.parkingInfo);
+    $('#roadHistoricalData').val(oldObject.historicalData);
+    $('#roadColor').val(oldObject.color);
+    $('#roadWeight').val(oldObject.width);
 }
 
 function objectCoordsEditHandler(id, type, e) {
@@ -185,16 +222,6 @@ function objectCoordsEditHandler(id, type, e) {
             $('#landPlotName').val(oldObject.name);
             $('#landPlotSquare').val(oldObject.square);
             $('#landPlotHistoricalData').val(oldObject.historicalData);
-            break;
-
-        case Road.name:
-            roadData.show();
-            $('#roadName').val(oldObject.name);
-            $('#roadLong').val(oldObject.long);
-            $('#roadLanesCount').val(oldObject.lanesCount);
-            $('#roadOneWay').val(oldObject.oneWay);
-            $('#roadParkingInfo').val(oldObject.parkingInfo);
-            $('#roadHistoricalData').val(oldObject.historicalData);
             break;
 
         default:
@@ -252,23 +279,32 @@ function applyObjectChanges() {
                 infoObjectsArray[currentObjectPosition].id);
             break;
 
-        case Road.name:
-            infoObjectsArray[currentObjectPosition] = new Road(
-                $('#roadName').val(),
-                infoObjectsArray[currentObjectPosition].coords,
-                $('#roadLong').val(),
-                $('#roadLanesCount').val(),
-                $('#roadOneWay').val(),
-                $('#roadParkingInfo').val(),
-                $('#roadHistoricalData').val(),
-                infoObjectsArray[currentObjectPosition].id);
-            break;
-
         default:
             break;
     }
 
     currentObjectPosition = null;
+}
+
+function applyRoadChanges() {
+    let width = parseInt($('#roadWeight').val());
+    if (width !== width) {
+        width = tmpRoads[currentRoadPosition].width;
+    }
+
+    infoRoadsArray[currentRoadPosition] = new Road(
+        $('#roadName').val(),
+        infoRoadsArray[currentRoadPosition].coords,
+        $('#roadLong').val(),
+        $('#roadLanesCount').val(),
+        $('#roadOneWay').val(),
+        $('#roadParkingInfo').val(),
+        $('#roadHistoricalData').val(),
+        $('#roadColor').val(),
+        width,
+        infoRoadsArray[currentRoadPosition].id);
+
+    console.log(infoRoadsArray[currentRoadPosition]);
 }
 
 function applyLineChanges(infoArray, tmpArray, currentPosition) {
@@ -286,13 +322,13 @@ function applyLineChanges(infoArray, tmpArray, currentPosition) {
     currentPosition = null;
 }
 
-function getObjectsFromCookie() {
-    if ($.cookie('infoObjectsArray') === null
-        || $.cookie('infoObjectsArray') === undefined) {
+function getObjectsFromCookie(name = 'infoObjectsArray') {
+    if ($.cookie(name) === null
+        || $.cookie(name) === undefined) {
         return [];
     }
 
-    let tmp = JSON.parse($.cookie('infoObjectsArray'));
+    let tmp = JSON.parse($.cookie(name));
     let result = [];
     for (let i = 0; i < tmp.length; i++) {
         switch (tmp[i].type) {
@@ -304,10 +340,6 @@ function getObjectsFromCookie() {
                 result.push(CommercialBuilding.fromJSON(tmp[i]));
                 break;
 
-            case Road.name:
-                result.push(Road.fromJSON(tmp[i]));
-                break;
-
             case LandPlot.name:
                 result.push(LandPlot.fromJSON(tmp[i]));
                 break;
@@ -316,6 +348,22 @@ function getObjectsFromCookie() {
                 break;
         }
     }
+    return result;
+}
+
+function getRoadsFromCookie(name = 'infoRoadsArray') {
+    if ($.cookie(name) === null
+        || $.cookie(name) === undefined) {
+        return [];
+    }
+
+    let tmp = JSON.parse($.cookie(name));
+    let result = [];
+
+    for (let i = 0; i < tmp.length; i++) {
+        result.push(Road.fromJSON(tmp[i]));
+    }
+
     return result;
 }
 

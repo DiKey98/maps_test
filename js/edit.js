@@ -18,6 +18,10 @@ $(document).ready(function () {
             infoGasNetArray = getNetsFromCookie('infoGasNetArray');
             break;
 
+        case "roads":
+            infoRoadsArray = getRoadsFromCookie();
+            break;
+
         default:
             infoElectricityNetArray = getNetsFromCookie('infoElectricityNetArray');
             break;
@@ -165,6 +169,12 @@ function showNets(type) {
                 true, true);
             break;
 
+        case "roads":
+            console.log(infoRoadsArray);
+            roads = showLines(infoRoadsArray, true, true, true,
+                true, true, true);
+            break;
+
         default:
             electricityNet = showLines(infoElectricityNetArray, true,
                 true, true, true, true);
@@ -176,6 +186,7 @@ function saveNetsInfo() {
     tmpElectricityNetArray = saveNetInfo(infoElectricityNetArray);
     tmpWaterSupplyNetArray = saveNetInfo(infoWaterSupplyNetArray);
     tmpGasNetArray = saveNetInfo(infoGasNetArray);
+    tmpRoads = saveNetInfo(infoRoadsArray);
 }
 
 function saveObjectOrNet() {
@@ -185,12 +196,15 @@ function saveObjectOrNet() {
     } else if (currentElectricityLinePosition !== null) {
         applyLineChanges(infoElectricityNetArray, tmpElectricityNetArray, currentElectricityLinePosition);
         saveNetsToCookie(infoElectricityNetArray, 'infoElectricityNetArray');
-    }else if (currentWaterSupplyLinePosition !== null) {
+    } else if (currentWaterSupplyLinePosition !== null) {
         applyLineChanges(infoWaterSupplyNetArray, tmpWaterSupplyNetArray, currentWaterSupplyLinePosition);
         saveNetsToCookie(infoWaterSupplyNetArray, 'infoWaterSupplyNetArray');
-    }else if (currentGasLinePosition !== null) {
+    } else if (currentGasLinePosition !== null) {
         applyLineChanges(infoGasNetArray, tmpGasNetArray, currentGasLinePosition);
         saveNetsToCookie(infoGasNetArray, 'infoGasNetArray');
+    } else if (currentRoadPosition !== null) {
+        applyRoadChanges();
+        saveNetsToCookie(infoRoadsArray, 'infoRoadsArray');
     }
 }
 
@@ -211,5 +225,10 @@ function removeObjectOrNet() {
         infoGasNetArray.splice(currentGasLinePosition, 1);
         tmpGasNetArray.splice(currentGasLinePosition, 1);
         saveNetsToCookie(infoGasNetArray, 'infoGasNetArray');
+    }
+    else if (currentRoadPosition !== null) {
+        infoRoadsArray.splice(currentRoadPosition, 1);
+        tmpRoads.splice(currentRoadPosition, 1);
+        saveNetsToCookie(infoRoadsArray, 'infoRoadsArray');
     }
 }

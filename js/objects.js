@@ -96,21 +96,21 @@ $(document).ready(function () {
                 });
                 break;
 
-            case "roadButton":
-                Road.renderInputForm();
-                $('#roadSaveButton').click(function (e) {
-                    if (currentPolygone === null) {
-                        return;
-                    }
-                    e.preventDefault();
-                    let road = new Road();
-                    road.coords = currentPolygone._latlngs;
-                    road.setDataFromForm();
-                    infoObjectsArray.push(road);
-                    Road.removeInputForm();
-                    save(currentPolygone);
-                });
-                break;
+            // case "roadButton":
+            //     Road.renderInputForm();
+            //     $('#roadSaveButton').click(function (e) {
+            //         if (currentPolygone === null) {
+            //             return;
+            //         }
+            //         e.preventDefault();
+            //         let road = new Road();
+            //         road.coords = currentPolygone._latlngs;
+            //         road.setDataFromForm();
+            //         infoObjectsArray.push(road);
+            //         Road.removeInputForm();
+            //         save(currentPolygone);
+            //     });
+            //     break;
 
             case "landPlotButton":
                 LandPlot.renderInputForm();
