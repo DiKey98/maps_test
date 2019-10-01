@@ -44,6 +44,7 @@ function showLines(infoArray = infoElectricityNetArray, bindEditHandler = true,
         let polygon = L.polyline(coords, {color: infoArray[i].color, weight: infoArray[i].width});
         netsArray.push(polygon);
 
+        console.log(infoArray.length);
         if (addToMap) {
             polygon = polygon.addTo(editableLayers);
             netsArray.pop();
@@ -61,9 +62,9 @@ function showLines(infoArray = infoElectricityNetArray, bindEditHandler = true,
         if (bindEditHandler) {
             if (!isRoad) {
                 polygon.on('editable:editing click', lineCoordsEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
-                return netsArray;
+            } else {
+                polygon.on('editable:editing click', roadEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
             }
-            polygon.on('editable:editing click', roadEditHandler.bind(null, infoArray[i].id, infoArray[i].type));
         } else if (bindClickHandler) {
             polygon.on('click', lineClickHandler.bind(null, i, infoArray));
         }
@@ -303,8 +304,6 @@ function applyRoadChanges() {
         $('#roadColor').val(),
         width,
         infoRoadsArray[currentRoadPosition].id);
-
-    console.log(infoRoadsArray[currentRoadPosition]);
 }
 
 function applyLineChanges(infoArray, tmpArray, currentPosition) {

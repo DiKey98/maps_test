@@ -94,7 +94,7 @@ $(document).ready(function () {
             case "Водопроводная сеть":
                 break;
 
-            case "Информация об объектах и дорогах":
+            case "Информация об объектах":
                 showObjectsInfo = true;
                 break;
         }
@@ -170,7 +170,6 @@ function showNets(type) {
             break;
 
         case "roads":
-            console.log(infoRoadsArray);
             roads = showLines(infoRoadsArray, true, true, true,
                 true, true, true);
             break;
