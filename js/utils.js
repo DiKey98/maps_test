@@ -44,7 +44,6 @@ function showLines(infoArray = infoElectricityNetArray, bindEditHandler = true,
         let polygon = L.polyline(coords, {color: infoArray[i].color, weight: infoArray[i].width});
         netsArray.push(polygon);
 
-        console.log(infoArray.length);
         if (addToMap) {
             polygon = polygon.addTo(editableLayers);
             netsArray.pop();
@@ -106,7 +105,10 @@ function lineCoordsEditHandler(id, type, e) {
         oldObject = infoElectricityNetArray[currentElectricityLinePosition];
         tmpElectricityNetArray[currentElectricityLinePosition].coords = e.target._latlngs;
     }
-    lineOptions.show();
+
+    if (type !== "Road") {
+        lineOptions.show();
+    }
 
     $('#lineWeight').on("input", function (e) {
         if (currentElectricityLinePosition !== null) {
@@ -169,8 +171,8 @@ function lineCoordsEditHandler(id, type, e) {
 
 function roadEditHandler(id, type, e) {
     lineCoordsEditHandler(id, type, e);
-
     roadData.show();
+
     $('#roadName').val(oldObject.name);
     $('#roadLong').val(oldObject.long);
     $('#roadLanesCount').val(oldObject.lanesCount);

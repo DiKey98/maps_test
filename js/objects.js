@@ -28,11 +28,7 @@ $(document).ready(function () {
     });
 
     $('#rectButton').click(function (e) {
-        if (currentPolygone !== null) {
-            map.removeLayer(currentPolygone);
-            currentPolygone = null;
-        }
-
+        currentPolygone = null;
         infoTableContainer.hide();
         $('#infoTable').empty();
 

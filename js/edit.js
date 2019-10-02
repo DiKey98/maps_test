@@ -128,6 +128,7 @@ function saveNetsToCookie(infoArray, name = 'infoElectricityNetArray') {
     let result = [];
     for (let i = 0; i < infoArray.length; i++) {
         result.push(infoArray[i].toJSON());
+        console.log(infoArray[i]);
         for (let k = 0; k < result[i].coords.length; k++) {
             result[i].coords[k] = {
                 lat: result[i].coords[k].lat,
@@ -170,6 +171,7 @@ function showNets(type) {
             break;
 
         case "roads":
+            console.log(infoRoadsArray);
             roads = showLines(infoRoadsArray, true, true, true,
                 true, true, true);
             break;
