@@ -3,6 +3,7 @@ $(document).ready(function () {
     initMapObjects();
     initNetArrays();
     infoObjectsArray = getObjectsFromCookie();
+    infoRoadsArray = getRoadsFromCookie();
 
     saveEmailToCookie();
     setEmailFromCookie();
@@ -10,6 +11,7 @@ $(document).ready(function () {
     electricityNet = showLines(infoElectricityNetArray, false, false, false, true, false);
     waterSupplyNet = showLines(infoWaterSupplyNetArray, false, false, false, true, false);
     gasNet = showLines(infoGasNetArray, false, false, false, true, false);
+    roads = showLines(infoRoadsArray, false, false, false, true, false, true);
 
     let overlayMap = {
         "Электрическая сеть": L.layerGroup(electricityNet),
