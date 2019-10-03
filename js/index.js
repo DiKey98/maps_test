@@ -17,7 +17,7 @@ $(document).ready(function () {
         "Электрическая сеть": L.layerGroup(electricityNet),
         "Газовая сеть": L.layerGroup(gasNet),
         "Водопроводная сеть": L.layerGroup(waterSupplyNet),
-        "Дороги": L.layerGroup(),
+        "Дороги": L.layerGroup(roads),
         "Информация об объектах": L.layerGroup(),
     };
 
